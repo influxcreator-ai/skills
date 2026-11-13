@@ -1,9 +1,7 @@
 import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
 import { createOutreachClient, operations, OutreachError, prepareConfirmation } from './_outreach_client.mjs';
 
-export function isMain(url) { return Boolean(process.argv[1]) && pathToFileURL(resolve(process.argv[1])).href === url; }
+export { isMain } from './_common.mjs';
 
 export async function runCli(operation, { args = process.argv.slice(2), env = process.env, client, stdout = value => console.log(value), stderr = value => console.error(value) } = {}) {
   try {
