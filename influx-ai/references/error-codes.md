@@ -117,3 +117,7 @@ Billing 行为依赖 `billing.backend`：Key 和 scope 始终校验，legacy 不
 ## 物流追踪
 
 十一操作统一 `logistics-tracking` scope，成功均为 HTTP 200。HTTP×100+1 的外层 code、受控 `reason`、`Retry-After` 和结果未知时的处理见[物流追踪契约](logistics-tracking.md#错误与恢复)。409 `shipment_version_changed` 后不自动换版本重放；`registration_needs_confirmation` 不是确定失败；变更类操作结果未知时先读取最新状态，不自动重发或 retry。
+
+## 视频监控
+
+七操作统一 `video-monitor` scope，成功均为 HTTP 200。HTTP×100+1 的外层 code、受控 `reason`、`Retry-After` 和结果未知时的处理见[视频监控契约](video-monitor.md#错误与恢复)。404 `monitor_not_found` 不报成功；409 `monitor_state_changed` 后不自动覆盖期限；全部链接已有活跃监控时 register 返回 422，不是成功的空结果；动作类操作结果未知时先查现状，不自动重发。

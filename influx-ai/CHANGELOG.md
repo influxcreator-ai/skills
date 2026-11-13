@@ -15,6 +15,8 @@
 - submit、retry 返回 202 仅受理；`get_batch --wait` 每 2 秒查询一次、最多 30 次；画像状态与后台采集状态分开报告；`reused` 结果保留原获得时间，不当作本次新分析；`unknown` 条目可能已计费，retry 只按用户明确要求运行。
 - 新增物流追踪子 Skill、十一个 POST 操作及契约参考，统一 `logistics-tracking` scope；列表沿用 `page` / `size`。
 - 登记保持原 `operation_id`，变更携带最新 `version`，409 后不自动重放；refresh 不作为普通查询或轮询；retry 执行原未完成动作，只按用户明确要求运行。注册、运输、追踪、人工跟进与账务分别报告，运单扣费可能是历史回执，`meta` 账务字段为 null 不代表免费。
+- 新增视频监控子 Skill、七个 POST 操作及契约参考，统一 `video-monitor` scope；`monitor_id` 与返回的 `id` 使用十进制字符串。
+- 注册成功或手动采集 `accepted=true` 不代表采集完成；默认监控 15 天、每 1440 分钟（24 小时）采集；修改期限必须显式选择新期限并携带读取到的截止时间，409 后不自动覆盖；list 与 get 不触发采集，get 可能回填达人快照；账务字段为 null 不代表免费。
 - 同步根路由、说明、元数据及完整性清单；保持 preview。
 
 ## v0.3.0 - preview

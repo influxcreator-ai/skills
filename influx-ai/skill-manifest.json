@@ -27,7 +27,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "2400f46da438f28a1cc25f5d78692ce363cd3a83be9ab38862dad389b487463e"
+      "sha256": "629c853aa7882afab4d5c9aacc8c46b5a35b47fd30a6d18a64f167b4dd24bbec"
     },
     {
       "path": "LICENSE",
@@ -35,11 +35,11 @@
     },
     {
       "path": "README.md",
-      "sha256": "6200b1bdc4270722293116042fa668cfd1dace3b7bbcbe20e2961c6faff8e2d6"
+      "sha256": "1634229a95fddd2f4a9701fb6ed1e29ce86d6a8a510c7ae4f04ccbd15bb7cf59"
     },
     {
       "path": "SKILL.md",
-      "sha256": "113ae099bc11650ae447390ada2fbdc04c265de5382c3138d62b3dd1c3b1a9c0"
+      "sha256": "b0acf2889cb5c9199d42b43a3278adfe1169ac823425146e9feaf913c0fb01d1"
     },
     {
       "path": "discovery/creator-lookalike/SKILL.md",
@@ -59,7 +59,7 @@
     },
     {
       "path": "references/api-reference.md",
-      "sha256": "e099a8ccb6860a95079d80118d5857b060c24f5f291e78b872a1c9a0886e4780"
+      "sha256": "778a84279b094c75664fad920dc58d0e02fb1e09d6e51a5cb71b5e5c87d270c9"
     },
     {
       "path": "references/country-codes.md",
@@ -75,7 +75,7 @@
     },
     {
       "path": "references/error-codes.md",
-      "sha256": "1562e15c901011706ad9d11e340eff8e06cfd1f3337f41b8e3659aaf2ac1a18a"
+      "sha256": "450f54c1882f32379a1cf93092911f1c61838883d1b1cb9c2fdf2e78e8528c74"
     },
     {
       "path": "references/hashtag-deep-search.md",
@@ -96,6 +96,10 @@
     {
       "path": "references/platform-params.md",
       "sha256": "e90e7752cdb4ef639d1b283852de9b8c138c2a8fb72e1d8f4454fd8f804e58de"
+    },
+    {
+      "path": "references/video-monitor.md",
+      "sha256": "5ed9919a9f343cbc0aadb89094e8a9373de30878327d4639e646e3084b2a5871"
     },
     {
       "path": "scripts/_common.mjs",
@@ -144,6 +148,14 @@
     {
       "path": "scripts/_profile_tagging_client.mjs",
       "sha256": "17232aaa408c4998d365100c4fe6137bde9811e7d73409f321e8bb6aba8de49c"
+    },
+    {
+      "path": "scripts/_video_monitor_cli.mjs",
+      "sha256": "05649588452ae3738e205168d82508b523ca1f6fac9bb0e75e9477805920f561"
+    },
+    {
+      "path": "scripts/_video_monitor_client.mjs",
+      "sha256": "9a6e218da54c8145193baabc9ba6bc171d8600fe6c2f02c61f711e0616e7fde6"
     },
     {
       "path": "scripts/email_lookup_create.mjs",
@@ -322,8 +334,36 @@
       "sha256": "54f9f1908b59b7a44bf4c09559aad2f001afba4712b846fafaeab46d7b379c29"
     },
     {
+      "path": "scripts/video_monitor_archive.mjs",
+      "sha256": "002952d36655c597b9526c31e8c6d1a49a35bd7fc0b5c3f1c2ae33706d2077ec"
+    },
+    {
+      "path": "scripts/video_monitor_deadline.mjs",
+      "sha256": "bdb11e9a051ee23614405b5fc6edc520da58ed14a6119d3d1a1427d73a04ee15"
+    },
+    {
+      "path": "scripts/video_monitor_get.mjs",
+      "sha256": "97c778233bb5866fde7f059d8e3bda439ecdf5a58b5dd7e68995b743dfdc60b1"
+    },
+    {
+      "path": "scripts/video_monitor_list.mjs",
+      "sha256": "a34f30310c3bcf839283f7148f03423c957372d85cf5dbec0b25907e96a972a8"
+    },
+    {
+      "path": "scripts/video_monitor_register.mjs",
+      "sha256": "caa877f3b4590976ef770b038bf1ca93d1fdb680f7fc694faa1989f83e9f4efb"
+    },
+    {
+      "path": "scripts/video_monitor_status.mjs",
+      "sha256": "631aafa191036c54a0c19db68f34be2f34428fc002a550d1b54a5a4b368c46ac"
+    },
+    {
+      "path": "scripts/video_monitor_trigger.mjs",
+      "sha256": "46e090c847fe8ffbe27b5b4aab01c8c56929177cd88bd3c2ec0a624bd1659df7"
+    },
+    {
       "path": "skill.json",
-      "sha256": "781d20ebb6c9fa87b0e6f53b20622cd4c12150387f100dbb0df32827361103b7"
+      "sha256": "9332b9f648cc65d888dafad65f1535651b2efc03d91e84e0989b309caf2b0d44"
     },
     {
       "path": "tools/creator-email-lookup/SKILL.md",
@@ -340,6 +380,10 @@
     {
       "path": "tools/logistics-tracking/SKILL.md",
       "sha256": "8a0a54d8ba264a517b2661842c57ff711dde98d1fc7c34c26486a2b61bb97b03"
+    },
+    {
+      "path": "tools/video-monitor/SKILL.md",
+      "sha256": "14cf2bc41b690a323ebbd78893bf046b546baedf632d31cf680f52e612270973"
     }
   ],
   "purpose": "项目自身文件清单与 SHA-256 完整性校验；不作为 skills CLI 的复制过滤规则。",

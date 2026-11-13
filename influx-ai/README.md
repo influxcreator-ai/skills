@@ -1,8 +1,8 @@
-# Influx AI 达人发现、邮箱查找、Hashtag 深度搜索、画像打标、物流追踪与邮件建联 Skill
+# Influx AI 达人发现、邮箱查找、Hashtag 深度搜索、画像打标、物流追踪、视频监控与邮件建联 Skill
 
 > **当前版本**：0.4.0 · **运行环境**：Node.js 20.6+ · **发布渠道**：preview
 
-`influx-ai` 通过 Scout OpenAPI 提供达人发现、独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪与邮件建联。支持自然语言/结构化检索、相似达人、品牌合作与实时提及，按研究需求搜索 hashtag，为一批达人主页生成画像，追踪寄样运单，以及首封发送、已有会话回复、发送台账和内容准备。
+`influx-ai` 通过 Scout OpenAPI 提供达人发现、独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪、视频监控与邮件建联。支持自然语言/结构化检索、相似达人、品牌合作与实时提及，按研究需求搜索 hashtag，为一批达人主页生成画像，追踪寄样运单，持续监控视频表现，以及首封发送、已有会话回复、发送台账和内容准备。
 
 ## v0.4.0 更新
 
@@ -14,6 +14,8 @@
 - 画像状态与后台采集状态分开报告；复用的画像保留原获得时间，不当作本次新分析；`unknown` 条目可能已计费，retry 只按用户明确要求运行。
 - 新增物流追踪十一操作：承运商查询、登记运单、列表、统计、轨迹详情、刷新、恢复、更换承运商、人工跟进、停止与删除；统一 `logistics-tracking` scope。
 - 登记保持原 `operation_id`，变更携带最新 `version`；refresh 与 retry 只按用户明确要求运行；运单扣费可能是历史回执，`meta` 账务字段为 null 不代表免费。
+- 新增视频监控七操作：注册、列表、详情、暂停／恢复、修改期限、归档与手动采集；统一 `video-monitor` scope，`monitor_id` 使用十进制字符串。
+- 注册成功或 `accepted=true` 不代表采集完成；默认监控 15 天、每 1440 分钟（24 小时）采集；修改期限必须携带读取到的截止时间，409 后不自动覆盖。
 
 ### v0.3.0 既有能力
 
@@ -26,7 +28,7 @@
 
 ## 主要能力
 
-达人发现位于 `discovery/`，独立邮箱查找、Hashtag 深度搜索、达人画像打标与物流追踪位于 `tools/`，邮件建联位于 `outreach/`：
+达人发现位于 `discovery/`，独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪与视频监控位于 `tools/`，邮件建联位于 `outreach/`：
 
 | 子 Skill | 能力 | 入口脚本 |
 |----------|------|----------|
@@ -37,6 +39,7 @@
 | hashtag-deep-search | 按研究需求搜索 hashtag：提交任务、进度与结果、本人历史、下一批、重试 | `scripts/hashtag_deep_search_*.mjs` 五个入口 |
 | creator-profile-tagging | 为一批达人主页生成画像：读取参数、提交批次、进度、条目与画像结果、本人历史、重试 | `scripts/profile_tagging_*.mjs` 七个入口 |
 | logistics-tracking | 寄样运单：承运商查询、登记、列表、统计、轨迹、刷新、恢复、更换承运商、人工跟进、停止、删除 | `scripts/logistics_*.mjs` 十一个入口 |
+| video-monitor | 视频表现监控：注册、列表、快照与趋势、暂停／恢复、修改期限、归档、手动采集 | `scripts/video_monitor_*.mjs` 七个入口 |
 | creator-outreach | 首封/批量/Smart Send、回复、台账/会话、模板/预览/生成 | `scripts/outreach_*.mjs` 七个入口 |
 
 独立邮箱查找的参数、调用和副作用见[子 Skill](tools/creator-email-lookup/SKILL.md)与[契约参考](references/email-lookup.md)。仅 JSON paste 输入，不支持上传、导出、主动重试或发送；旧 Key 不会自动获得新 scope。
@@ -46,6 +49,8 @@ Hashtag 深度搜索的参数、调用和副作用见[子 Skill](tools/hashtag-d
 达人画像打标的参数、调用和副作用见[子 Skill](tools/creator-profile-tagging/SKILL.md)与[契约参考](references/creator-profile-tagging.md)。批次是异步的，202 仅表示受理；画像状态与后台采集状态分开解释；`reused` 结果不是本次新分析；`unknown` 条目可能已计费，不自动重试。当前不提供文件导出。
 
 物流追踪的参数、调用和副作用见[子 Skill](tools/logistics-tracking/SKILL.md)与[契约参考](references/logistics-tracking.md)。所有操作同步返回 HTTP 200；读取类操作不刷新供应商；登记、刷新、恢复、更换承运商、跟进修改、停止和删除只按用户明确意图执行；注册、运输、追踪、人工跟进和账务分别解释。
+
+视频监控的参数、调用和副作用见[子 Skill](tools/video-monitor/SKILL.md)与[契约参考](references/video-monitor.md)。所有操作同步返回 HTTP 200；list 和 get 不触发采集，get 可能回填达人快照；注册、状态变更、修改期限、归档和手动采集只按用户明确意图执行；监控生命周期与运行状态分别解释。
 
 ## 平台支持
 
@@ -176,6 +181,7 @@ influx-ai/
 ├── tools/hashtag-deep-search/SKILL.md  # Hashtag 深度搜索
 ├── tools/creator-profile-tagging/SKILL.md # 达人画像打标
 ├── tools/logistics-tracking/SKILL.md   # 物流追踪
+├── tools/video-monitor/SKILL.md        # 视频监控
 ├── README.md                          # 本文档
 ├── CHANGELOG.md                       # 版本更新记录
 ├── .gitignore                         # 本地文件排除规则
@@ -202,7 +208,9 @@ influx-ai/
     ├── _profile_tagging_client.mjs / _profile_tagging_cli.mjs
     ├── profile_tagging_{options,submit,list_batches,get_batch,list_items,get_item,retry}.mjs
     ├── _logistics_client.mjs / _logistics_cli.mjs
-    └── logistics_{carriers,register,list,stats,get,refresh,retry,change_carrier,follow_up,stop,delete}.mjs
+    ├── logistics_{carriers,register,list,stats,get,refresh,retry,change_carrier,follow_up,stop,delete}.mjs
+    ├── _video_monitor_client.mjs / _video_monitor_cli.mjs
+    └── video_monitor_{register,list,get,status,deadline,archive,trigger}.mjs
 ```
 
 ## 输出口径与边界
