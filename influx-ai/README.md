@@ -1,10 +1,21 @@
-# Influx AI 达人发现与邮件建联 Skill
+# Influx AI 达人发现、邮箱查找、Hashtag 深度搜索、画像打标、物流追踪与邮件建联 Skill
 
-> **当前版本**：0.3.0 · **运行环境**：Node.js 20.6+ · **发布渠道**：preview
+> **当前版本**：0.4.0 · **运行环境**：Node.js 20.6+ · **发布渠道**：preview
 
-`influx-ai` 通过 Scout OpenAPI 提供达人发现与邮件建联。支持自然语言/结构化检索、相似达人、品牌合作与实时提及，以及首封发送、已有会话回复、发送台账和内容准备。
+`influx-ai` 通过 Scout OpenAPI 提供达人发现、独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪与邮件建联。支持自然语言/结构化检索、相似达人、品牌合作与实时提及，按研究需求搜索 hashtag，为一批达人主页生成画像，追踪寄样运单，以及首封发送、已有会话回复、发送台账和内容准备。
 
-## v0.3.0 更新
+## v0.4.0 更新
+
+- 新增独立邮箱查找五操作：预览、创建、详情/进度、分页条目与本人列表；统一 `email-lookup` scope。
+- create 返回 202 仅受理；外查默认开启且可能产生供应商费用，预览不授权创建。
+- 新增 Hashtag 深度搜索五操作：提交研究任务、查询进度与结果、本人历史、搜索下一批、重试失败任务；统一 `hashtag-deep-search` scope。
+- submit 返回 202 仅受理；`get --wait` 每 2 秒查询一次、最多 30 次；next、retry 只按用户明确要求运行，会产生模型和检索成本。
+- 新增达人画像打标七操作：读取参数、提交批次、本人历史、批次进度、条目列表、画像详情与重试；统一 `creator-profile-tagging` scope，批次和条目 ID 使用十进制字符串。
+- 画像状态与后台采集状态分开报告；复用的画像保留原获得时间，不当作本次新分析；`unknown` 条目可能已计费，retry 只按用户明确要求运行。
+- 新增物流追踪十一操作：承运商查询、登记运单、列表、统计、轨迹详情、刷新、恢复、更换承运商、人工跟进、停止与删除；统一 `logistics-tracking` scope。
+- 登记保持原 `operation_id`，变更携带最新 `version`；refresh 与 retry 只按用户明确要求运行；运单扣费可能是历史回执，`meta` 账务字段为 null 不代表免费。
+
+### v0.3.0 既有能力
 
 - 新增邮件首封、批量发送、Smart Send 预约、已有会话回复，以及台账、会话和内容准备。
 - 支持用户文案、Agent 起草和 Scout 模板三种内容来源；发送前展示目标和完整内容，经用户确认后提交。
@@ -15,19 +26,32 @@
 
 ## 主要能力
 
-达人发现位于 `discovery/`，邮件建联位于 `outreach/`：
+达人发现位于 `discovery/`，独立邮箱查找、Hashtag 深度搜索、达人画像打标与物流追踪位于 `tools/`，邮件建联位于 `outreach/`：
 
 | 子 Skill | 能力 | 入口脚本 |
 |----------|------|----------|
 | creator-nl-search | 自然语言找达人：按内容方向/人设/风格/场景/产品适配描述搜索，含 `seed_creators` 参考账号 | `scripts/search_creators_nl.mjs` |
 | creator-search | 结构化分平台筛选列表 / 按品牌找公开合作达人 / 实时品牌提及采集 | `scripts/list_creators.mjs`、`scripts/find_brand_collaboration_creators.mjs`、实时提及脚本（submit/poll/status/results） |
 | creator-lookalike | 根据种子达人查找同平台相似达人 | `scripts/find_lookalike.mjs` |
+| creator-email-lookup | 指定账号查邮箱、预览、批次进度、分页结果和本人历史 | `scripts/email_lookup_*.mjs` 五个入口 |
+| hashtag-deep-search | 按研究需求搜索 hashtag：提交任务、进度与结果、本人历史、下一批、重试 | `scripts/hashtag_deep_search_*.mjs` 五个入口 |
+| creator-profile-tagging | 为一批达人主页生成画像：读取参数、提交批次、进度、条目与画像结果、本人历史、重试 | `scripts/profile_tagging_*.mjs` 七个入口 |
+| logistics-tracking | 寄样运单：承运商查询、登记、列表、统计、轨迹、刷新、恢复、更换承运商、人工跟进、停止、删除 | `scripts/logistics_*.mjs` 十一个入口 |
 | creator-outreach | 首封/批量/Smart Send、回复、台账/会话、模板/预览/生成 | `scripts/outreach_*.mjs` 七个入口 |
+
+独立邮箱查找的参数、调用和副作用见[子 Skill](tools/creator-email-lookup/SKILL.md)与[契约参考](references/email-lookup.md)。仅 JSON paste 输入，不支持上传、导出、主动重试或发送；旧 Key 不会自动获得新 scope。
+
+Hashtag 深度搜索的参数、调用和副作用见[子 Skill](tools/hashtag-deep-search/SKILL.md)与[契约参考](references/hashtag-deep-search.md)。任务是异步的，202 仅表示受理；最终结果以 `selected_candidate_ids` 为准，不能把全部候选当成交付标签。`next` 和 `retry` 是显式执行动作，不放进轮询或自动恢复；账务字段为 null，不代表免费。
+
+达人画像打标的参数、调用和副作用见[子 Skill](tools/creator-profile-tagging/SKILL.md)与[契约参考](references/creator-profile-tagging.md)。批次是异步的，202 仅表示受理；画像状态与后台采集状态分开解释；`reused` 结果不是本次新分析；`unknown` 条目可能已计费，不自动重试。当前不提供文件导出。
+
+物流追踪的参数、调用和副作用见[子 Skill](tools/logistics-tracking/SKILL.md)与[契约参考](references/logistics-tracking.md)。所有操作同步返回 HTTP 200；读取类操作不刷新供应商；登记、刷新、恢复、更换承运商、跟进修改、停止和删除只按用户明确意图执行；注册、运输、追踪、人工跟进和账务分别解释。
 
 ## 平台支持
 
 | 能力 | TikTok | Instagram | YouTube | Twitter (X) |
 |------|:------:|:---------:|:-------:|:-----------:|
+| 独立邮箱查找（creator-email-lookup） | ✅ | ✅ | ✅ | ✅ |
 | 自然语言搜索（creator-nl-search） | ✅ | ✅ | ✅ | — |
 | 结构化列表（creator-search） | ✅ | ✅ | ✅ | ✅ |
 | 相似达人（creator-lookalike） | ✅ | ✅ | ✅ | — |
@@ -148,6 +172,10 @@ influx-ai/
 ├── SKILL.md                           # Skill 入口（意图路由、生态总览、路由索引）
 ├── skill.json                         # 版本与运行配置
 ├── skill-manifest.json                # 文件清单
+├── tools/creator-email-lookup/SKILL.md # 独立邮箱查找
+├── tools/hashtag-deep-search/SKILL.md  # Hashtag 深度搜索
+├── tools/creator-profile-tagging/SKILL.md # 达人画像打标
+├── tools/logistics-tracking/SKILL.md   # 物流追踪
 ├── README.md                          # 本文档
 ├── CHANGELOG.md                       # 版本更新记录
 ├── .gitignore                         # 本地文件排除规则
@@ -168,7 +196,13 @@ influx-ai/
     ├── get_brand_realtime_mention_results.mjs
     ├── _discovery_response.mjs          # 达人发现响应提示共享模块
     ├── _outreach_client.mjs / _outreach_cli.mjs
-    └── outreach_{send,reply,status,thread,template,preview,generate}.mjs
+    ├── outreach_{send,reply,status,thread,template,preview,generate}.mjs
+    ├── _hashtag_deep_search_client.mjs / _hashtag_deep_search_cli.mjs
+    ├── hashtag_deep_search_{submit,get,list,next,retry}.mjs
+    ├── _profile_tagging_client.mjs / _profile_tagging_cli.mjs
+    ├── profile_tagging_{options,submit,list_batches,get_batch,list_items,get_item,retry}.mjs
+    ├── _logistics_client.mjs / _logistics_cli.mjs
+    └── logistics_{carriers,register,list,stats,get,refresh,retry,change_carrier,follow_up,stop,delete}.mjs
 ```
 
 ## 输出口径与边界
@@ -203,11 +237,11 @@ npx skills update
 
 ## 发布维护
 
-开发维护使用隔离协议测试阻断真实网络；本发布仓库不包含内部测试与联调记录。实际地址、Key、scope 和业务引用需由目标服务提供；模拟通过不代表已部署、已发信或已送达。
+实际地址、Key、scope 和业务引用需由目标服务提供。
 
 版本变化维护在 CHANGELOG.md。skill-manifest.json 仅记录本项目文件与 SHA-256，供自身完整性校验；skills CLI 不以它作为复制过滤规则。本地交流资料已放在 Skill 安装目录之外，不纳入安装包；后续联调记录也应保存在安装目录外。
 
-本地检查可执行 `node --check scripts/outreach_send.mjs` 等语法检查，并核对包内链接和 manifest 哈希；检查过程无需调用真实业务接口。安装来源为 xizi-9527/skills；正式服务根地址和 Key 申请方式仍待确定。当前保留 0.3.0 / preview，安装验证不代表目标服务已部署或所有业务能力已验收。
+本地检查可执行 `node --check scripts/outreach_send.mjs` 等语法检查，并核对包内链接和 manifest 哈希；检查过程无需调用真实业务接口。安装来源为 xizi-9527/skills；正式服务根地址和 Key 申请方式仍待确定。当前保留 0.4.0 / preview，安装验证不代表目标服务已部署或所有业务能力已验收。
 
 ## 安全说明
 

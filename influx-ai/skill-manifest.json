@@ -1,12 +1,13 @@
 {
   "name": "influx-ai",
-  "latest_version": "0.3.0",
+  "latest_version": "0.4.0",
   "min_supported_version": "0.1.0",
   "channel": "preview",
   "release_notes": [
-    "新增 Scout 邮件建联：首封/批量/Smart Send、已有会话回复、台账/会话及模板/预览/生成七项操作。",
-    "支持本地 Agent 起草、用户文案和 Scout 模板；确认后以 custom 内容发送，隔离测试覆盖结果未知及部分成功。",
-    "同步六个达人检索接口的认证、积分回执和限流提示；待结算或用量登记失败不自动重搜，保留完整响应。"
+    "新增独立邮箱查找五操作，统一 email-lookup scope：预览、创建、进度、分页结果和本人历史。",
+    "create 202 仅受理，保留原 UUID 提交键，不自动重提。",
+    "新增 Hashtag 深度搜索五操作，统一 hashtag-deep-search scope：提交研究任务、进度与结果、本人历史、下一批和重试；next、retry 只按用户明确要求运行。",
+    "保持 preview。"
   ],
   "sync": {
     "mode": "mirror",
@@ -26,7 +27,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "26377e210421826dd6cdfe60512af3c92cc3e3769958f4889a8112f7a2e599f9"
+      "sha256": "2400f46da438f28a1cc25f5d78692ce363cd3a83be9ab38862dad389b487463e"
     },
     {
       "path": "LICENSE",
@@ -34,11 +35,11 @@
     },
     {
       "path": "README.md",
-      "sha256": "5f9ad152f9b550a4d929f45de49b855160e162b46a8e67b645cececdd0afdd83"
+      "sha256": "6200b1bdc4270722293116042fa668cfd1dace3b7bbcbe20e2961c6faff8e2d6"
     },
     {
       "path": "SKILL.md",
-      "sha256": "413d27f9f786c9614bf176eef74b0d6cae93fbd79662c04f3647577cdef7879e"
+      "sha256": "113ae099bc11650ae447390ada2fbdc04c265de5382c3138d62b3dd1c3b1a9c0"
     },
     {
       "path": "discovery/creator-lookalike/SKILL.md",
@@ -58,15 +59,27 @@
     },
     {
       "path": "references/api-reference.md",
-      "sha256": "4607519066bc07cf1fb6e1279320a58035024cf306add88d00749f0dc6a997c3"
+      "sha256": "e099a8ccb6860a95079d80118d5857b060c24f5f291e78b872a1c9a0886e4780"
     },
     {
       "path": "references/country-codes.md",
       "sha256": "c9a33af934a5cebcb50b0c5b3e29632d9db93edc74cf2ebb3e909085a10a2386"
     },
     {
+      "path": "references/creator-profile-tagging.md",
+      "sha256": "754a48901b471c549188828bb9e8702c3c739c8c7389263cab29cf1a12165fd1"
+    },
+    {
+      "path": "references/email-lookup.md",
+      "sha256": "e92ef1ca9c5570db6bac94db2ace5ca7a65f565b8a461e6e6ab871ba6a406d14"
+    },
+    {
       "path": "references/error-codes.md",
-      "sha256": "303c06e5c474f91f1cd0b3568e4bc15a485a3c93449bb3f22827c561a85ff068"
+      "sha256": "1562e15c901011706ad9d11e340eff8e06cfd1f3337f41b8e3659aaf2ac1a18a"
+    },
+    {
+      "path": "references/hashtag-deep-search.md",
+      "sha256": "dc613a2a4887f5789251c2c80a81b1afd9106e1252abeacd5752f5452bdbe82b"
     },
     {
       "path": "references/industry-categories.md",
@@ -77,20 +90,80 @@
       "sha256": "fdde2a5cbd11426c9d46f41ce13af743bf1ce32d2dd9159f70fbf2ff0cf5ee57"
     },
     {
+      "path": "references/logistics-tracking.md",
+      "sha256": "357a34c1ca770c3ba8679249b6788d00ed15ed12f527db4609d35b2c68944d10"
+    },
+    {
       "path": "references/platform-params.md",
       "sha256": "e90e7752cdb4ef639d1b283852de9b8c138c2a8fb72e1d8f4454fd8f804e58de"
+    },
+    {
+      "path": "scripts/_common.mjs",
+      "sha256": "8e8bc757599c9511ec420d22b323ea26bc89f4b5ce92295064ca5f59049fade7"
     },
     {
       "path": "scripts/_discovery_response.mjs",
       "sha256": "9fe11a1ffddbca63a0cb913f1ba8239204b6abd68f19e50022128cfad6b3d956"
     },
     {
+      "path": "scripts/_email_lookup_cli.mjs",
+      "sha256": "38c46b56fe3b93c14a483b26189ca7bb189f30a5c0b8450f49cbab70c9f864a8"
+    },
+    {
+      "path": "scripts/_email_lookup_client.mjs",
+      "sha256": "08e11d60704eb3de0dbbd4db0c2b50f870512a433c06c5590fcd93eb2000e8fb"
+    },
+    {
+      "path": "scripts/_hashtag_deep_search_cli.mjs",
+      "sha256": "1a5a5f1000b8f31721a205923aa9ce8ee156689ef468796d6e8a09c15cb895ca"
+    },
+    {
+      "path": "scripts/_hashtag_deep_search_client.mjs",
+      "sha256": "e16f9f49f7915525de678298c7f112084184e865140f86a17abbc6b2cfbf9881"
+    },
+    {
+      "path": "scripts/_logistics_cli.mjs",
+      "sha256": "cc7c8e3c383831c19006bd3290f8a4d62e88b277d54713d1456dc065f598e486"
+    },
+    {
+      "path": "scripts/_logistics_client.mjs",
+      "sha256": "c1a2cf380ff18a21303beffd29e61ab7e258dd4ef6ac6f2bd883a28cc4262088"
+    },
+    {
       "path": "scripts/_outreach_cli.mjs",
-      "sha256": "f56d37c043b9896d8040cad949f2a372e7bcca60fee8f9faab89a6453940e97f"
+      "sha256": "d0133fca0ead81b9ef6db3251252cff317990eeddb96b8e798b4a55a8da5681c"
     },
     {
       "path": "scripts/_outreach_client.mjs",
       "sha256": "f72c6ada06940d02ee52e4935e7170c791979bb67cdabb079464c4f78c607a18"
+    },
+    {
+      "path": "scripts/_profile_tagging_cli.mjs",
+      "sha256": "43bc39b2ad50b34a49b49093f32cc097a502eebb45eecc2d3444140e88696a64"
+    },
+    {
+      "path": "scripts/_profile_tagging_client.mjs",
+      "sha256": "17232aaa408c4998d365100c4fe6137bde9811e7d73409f321e8bb6aba8de49c"
+    },
+    {
+      "path": "scripts/email_lookup_create.mjs",
+      "sha256": "38ac6a07951ef389902a6bbac68596d69b5120d9c85578804d6d94be554a097e"
+    },
+    {
+      "path": "scripts/email_lookup_get.mjs",
+      "sha256": "9a3237fe8d82a8589803662fd8c886bfd4fcdc362ff7d5ea37b1ca13b4f45e48"
+    },
+    {
+      "path": "scripts/email_lookup_items.mjs",
+      "sha256": "15fe9a7d9af866e5fff36f010a4152314ab77532ce661c1fc7588ca1732fe950"
+    },
+    {
+      "path": "scripts/email_lookup_list.mjs",
+      "sha256": "c00317b0374f3634acc6759cd27d174cd0b1a5c9eb6f5f681b60c15127d38ece"
+    },
+    {
+      "path": "scripts/email_lookup_preview.mjs",
+      "sha256": "a822925b0fcdcc7f8908d27194203c59c505cd0f25ed95963476e96578037ab2"
     },
     {
       "path": "scripts/find_brand_collaboration_creators.mjs",
@@ -101,6 +174,10 @@
       "sha256": "53d4fa7b0899270afca49436943e1a1164c9e83594c470243f459fbbfd0d244b"
     },
     {
+      "path": "scripts/generate_manifest.mjs",
+      "sha256": "08d2bd43951cdeabfe7074b2068342badaf2ec0279462863a21dff4b0f822772"
+    },
+    {
       "path": "scripts/get_brand_realtime_mention_results.mjs",
       "sha256": "78ebde29ccc3609b42c3d69a0d6d0bfca120038a300167170ca104d48bca2f04"
     },
@@ -109,8 +186,72 @@
       "sha256": "8fca2ddd2b3f01e99d4f300519ba6a2bcf19ed1577b6cffbd007f2bffbdca1be"
     },
     {
+      "path": "scripts/hashtag_deep_search_get.mjs",
+      "sha256": "8175639af467b837b6fb78c289bdfae518d5667e6274134be893e55e7abb9c58"
+    },
+    {
+      "path": "scripts/hashtag_deep_search_list.mjs",
+      "sha256": "93ccf14b6dbea48e3765df8e817e2451605ef41ccce5e7f589cf8d7ea07b4e1d"
+    },
+    {
+      "path": "scripts/hashtag_deep_search_next.mjs",
+      "sha256": "ec76da8473b70467e883d403518a02b4483675bce76a1a71a8d3343d0099ab13"
+    },
+    {
+      "path": "scripts/hashtag_deep_search_retry.mjs",
+      "sha256": "561d4c400831165916d5b663448229b81f75266b44f1bf8d528a3e744d8284d8"
+    },
+    {
+      "path": "scripts/hashtag_deep_search_submit.mjs",
+      "sha256": "5bc4a77e91cd0985a30891ecaedc3a22b70985c4e646ac03c3f03da469078dc3"
+    },
+    {
       "path": "scripts/list_creators.mjs",
       "sha256": "303417fd27ab1998806b34bc7270d5e02d39f9561e8246c427f033a3237e1f41"
+    },
+    {
+      "path": "scripts/logistics_carriers.mjs",
+      "sha256": "e0e665769d07978080b5e2a34ad81265fb978220f424a0bc811c804643bbbad1"
+    },
+    {
+      "path": "scripts/logistics_change_carrier.mjs",
+      "sha256": "11689c2747c00fd24d56f99ea0bd2070847867432a58d28fd616beab9dff5a93"
+    },
+    {
+      "path": "scripts/logistics_delete.mjs",
+      "sha256": "04cf141875b1133c6f4004ec325961d5ac00c8ec30181a5f1459df552fb5413b"
+    },
+    {
+      "path": "scripts/logistics_follow_up.mjs",
+      "sha256": "1ac44f3a59c7d98eb2a96d5447ca05e26a94b577921540750102d54510358ecd"
+    },
+    {
+      "path": "scripts/logistics_get.mjs",
+      "sha256": "665cfe4652e5e7249434552ad36b75e2b7ae631d6ac94434ae4dd36e4fb45dd8"
+    },
+    {
+      "path": "scripts/logistics_list.mjs",
+      "sha256": "dd96cc6d4c24ba315e8a4c40ebfe646339f8eaa6999d106255d39721a1d0ff9f"
+    },
+    {
+      "path": "scripts/logistics_refresh.mjs",
+      "sha256": "dc26a81a798f3c9731698d1c1fb6b0311573e5940a860efa3faefd8eb06ade16"
+    },
+    {
+      "path": "scripts/logistics_register.mjs",
+      "sha256": "f182e28454edb2c21a8df0b2fafa39728e8992129ca3e691985ec813b48e35ac"
+    },
+    {
+      "path": "scripts/logistics_retry.mjs",
+      "sha256": "374dd22ea960d27187ea48aeebcb04a649ba510a3db2e31ecce208c8f777c50b"
+    },
+    {
+      "path": "scripts/logistics_stats.mjs",
+      "sha256": "ccfac7b73a138a6724089b224c6f73566c5a405ed4db37ee65502516e14fe749"
+    },
+    {
+      "path": "scripts/logistics_stop.mjs",
+      "sha256": "61ab54bec35bcb8ef4b523b26825f528f1dc3124ab101e7393580f18ac6d364a"
     },
     {
       "path": "scripts/outreach_generate.mjs",
@@ -145,6 +286,34 @@
       "sha256": "df5345a81c411a5c080a5af92ae627965df24fc692aa4b4e762a314ae24bf0e5"
     },
     {
+      "path": "scripts/profile_tagging_get_batch.mjs",
+      "sha256": "99ec1fa30c019b4fbb5f0f54ae0d0b8ab7102365c216db6b0f881602548b4f4d"
+    },
+    {
+      "path": "scripts/profile_tagging_get_item.mjs",
+      "sha256": "1392c4c87c07fe3dd7144ef560bc1cb36d6acdffc57f6d28e9b2e63afd7ca887"
+    },
+    {
+      "path": "scripts/profile_tagging_list_batches.mjs",
+      "sha256": "f84d2d8a9fe1868ad7ecd97278de59499d4a62700cff25982f3c017d7825c43b"
+    },
+    {
+      "path": "scripts/profile_tagging_list_items.mjs",
+      "sha256": "a957ee3c85877a8f1b6505331ebd8817afff93c65c3778b830b1b2f78760ecf2"
+    },
+    {
+      "path": "scripts/profile_tagging_options.mjs",
+      "sha256": "e64ce58f3863876cc6f6e98cae87cb48769ec76ce6b7aeebe925300864f4bd93"
+    },
+    {
+      "path": "scripts/profile_tagging_retry.mjs",
+      "sha256": "49e84aaca71e6e1b41c01d4c7818165e8c6fa1170248b5a261f30712c5019458"
+    },
+    {
+      "path": "scripts/profile_tagging_submit.mjs",
+      "sha256": "243d02c821faa0c022a43eeaa0c87c3e12e0ef192947795907edbea5d5fd7ab8"
+    },
+    {
       "path": "scripts/search_creators_nl.mjs",
       "sha256": "fa2e858131e2f9b4c123bbcb6545346b390dce58258e7a8d5e437d93c29c9e59"
     },
@@ -154,7 +323,23 @@
     },
     {
       "path": "skill.json",
-      "sha256": "ec575ee323bc71276b25608acb3f8dfb593d6c3060f7a2d36329578d20bd2106"
+      "sha256": "781d20ebb6c9fa87b0e6f53b20622cd4c12150387f100dbb0df32827361103b7"
+    },
+    {
+      "path": "tools/creator-email-lookup/SKILL.md",
+      "sha256": "a12d5c6fdd0deb9b38d0c25a73665d14e9bed257473eb3e70dbd9c4053571273"
+    },
+    {
+      "path": "tools/creator-profile-tagging/SKILL.md",
+      "sha256": "18ba6314f0316a9c6ce1f7b5f12f653e1d8097592b1c27a43d6eed4e552a371a"
+    },
+    {
+      "path": "tools/hashtag-deep-search/SKILL.md",
+      "sha256": "30ba55f265b03b4108c4dcdde86f568fda4188a79a2b9c3eef46afa13ac17852"
+    },
+    {
+      "path": "tools/logistics-tracking/SKILL.md",
+      "sha256": "8a0a54d8ba264a517b2661842c57ff711dde98d1fc7c34c26486a2b61bb97b03"
     }
   ],
   "purpose": "项目自身文件清单与 SHA-256 完整性校验；不作为 skills CLI 的复制过滤规则。",

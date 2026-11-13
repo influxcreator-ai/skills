@@ -3,20 +3,25 @@ name: influx-ai
 description: |
   达人发现 Skill。支持自然语言查找 TikTok、Instagram、YouTube 达人，按结构化筛选条件分平台浏览
   TikTok/Instagram/YouTube/Twitter 达人库，按品牌查找公开合作达人，以及根据种子达人查找相似达人。
-  支持达人邮件建联：首封、回复、Smart Send 预约、台账/会话查询及首封内容准备，调用 Scout OpenAPI。
+  支持独立邮箱查找：预览、创建、进度、分页结果和本人历史；支持 Hashtag 深度搜索：按研究需求提交任务、查询进度与结果、本人历史、搜索下一批和重试；支持达人画像打标：提交主页批次、查询进度、条目与画像结果、本人历史和重试；支持物流追踪：登记寄样运单、查看列表、统计与轨迹，以及刷新、恢复、更换承运商、人工跟进、停止和删除；也支持达人邮件建联：首封、回复、Smart Send 预约、台账/会话查询及首封内容准备，调用 Scout OpenAPI。
 compatibility: Node.js 20.6+
 license: MIT-0
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
 ---
 
 # Influx AI
 
 ## 强制执行边界
 
-根据用户的达人发现或邮件建联请求，选择对应子 Skill 和脚本。邮件发送、回复和预约须展示目标、主题、完整正文及模式，经用户确认后提交。接口无结果或不可用时，不未经用户同意改用公开网页搜索。
+根据用户的达人发现、独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪或邮件建联请求，选择对应子 Skill 和脚本。物流追踪的登记、刷新、恢复、更换承运商、跟进修改、停止和删除只按用户明确意图执行，变更前读取最新 version，409 后不自动重放。达人画像打标的 submit、retry 会产生外部打标和采集成本，只按用户明确意图运行；`unknown` 条目可能已计费，不自动重试。邮件发送、回复和预约须展示目标、主题、完整正文及模式，经用户确认后提交。Hashtag 深度搜索的 submit、next、retry 会产生模型和检索成本，只按用户明确意图运行，不放进轮询或自动恢复。接口无结果或不可用时，不未经用户同意改用公开网页搜索。
 
 ## 意图路由
+
+- 查找指定账号/主页的邮箱、预览查找输入、查询邮箱批次进度/结果/历史：加载 `tools/creator-email-lookup/SKILL.md`，调用五个 `scripts/email_lookup_*.mjs` 入口。仅筛选有邮箱候选仍走 discovery；独立查找不发送邮件。
+- 研究某个主题、品类或内容方向适合的 hashtag / 话题标签，或查询、续做之前的标签研究任务（进度、结果、历史、下一批、重试）：加载 `tools/hashtag-deep-search/SKILL.md`，调用五个 `scripts/hashtag_deep_search_*.mjs` 入口。找达人仍走 discovery。
+- 为用户给出的一批 Instagram / TikTok / YouTube 达人主页生成画像、打标签，或查询之前打标批次的进度、条目和画像结果、重试失败条目：加载 `tools/creator-profile-tagging/SKILL.md`，调用七个 `scripts/profile_tagging_*.mjs` 入口。找达人仍走 discovery。
+- 登记寄给达人的样品运单、查物流进度和签收情况、看运单统计、管理寄样跟进状态，或刷新、恢复、更换承运商、停止、删除运单：加载 `tools/logistics-tracking/SKILL.md`，调用十一个 `scripts/logistics_*.mjs` 入口。
 
 - 发合作邮件、回复已有达人会话、查询邮件台账/沟通历史、读取/准备首封内容：加载 `outreach/creator-outreach/SKILL.md`。支持本地 Agent 起草、用户文案及 Scout 模板；需要已有活动/活动达人关系，搜索 uid 或邮箱不能直接发送。
 - 用**自然语言描述**内容方向/人设/风格/场景/产品适配找达人：加载 `discovery/creator-nl-search/SKILL.md`，调用 `scripts/search_creators_nl.mjs`。
@@ -52,6 +57,10 @@ metadata:
 | discovery | creator-nl-search | 自然语言找达人：按内容方向/人设/风格/场景/产品适配描述搜索（TikTok/Instagram/YouTube），含 `seed_creators` 参考账号 |
 | discovery | creator-search | 结构化分平台筛选列表（TikTok/Instagram/YouTube/Twitter）、按品牌找公开合作达人、实时品牌提及采集 |
 | discovery | creator-lookalike | 根据 Scout 已收录的种子达人查找同平台相似达人 |
+| tools | creator-email-lookup | 独立邮箱查找：预览、创建、详情、分页条目、本人批次列表 |
+| tools | hashtag-deep-search | Hashtag 深度搜索：提交研究任务、查询进度与结果、本人历史、搜索下一批、重试失败任务 |
+| tools | creator-profile-tagging | 达人画像打标：读取参数、提交批次、批次进度、条目与画像结果、本人历史、重试失败条目 |
+| tools | logistics-tracking | 物流追踪：承运商查询、登记运单、列表、统计、轨迹详情、刷新、恢复、更换承运商、人工跟进、停止、删除 |
 | outreach | creator-outreach | 首封/批量/Smart Send、回复、台账/会话及首封模板/预览/生成 |
 
 ## 路由索引
@@ -61,6 +70,10 @@ metadata:
 | creator-nl-search | 自然语言找达人、描述型找达人、按内容方向/人设/风格/场景找达人、参考某账号找相近达人 | natural-language creator search, semantic creator discovery, reference-account search | `discovery/creator-nl-search/SKILL.md` |
 | creator-search | 结构化筛达人、达人列表、按国家/粉丝/互动/受众画像筛、品牌合作达人、合作过的达人、实时品牌提及 | structured filters, per-platform list, brand collaboration creators, realtime brand mentions | `discovery/creator-search/SKILL.md` |
 | creator-lookalike | 相似达人、类似达人、找同类型达人 | similar creators, lookalike | `discovery/creator-lookalike/SKILL.md` |
+| creator-email-lookup | 查邮箱、指定账号邮箱、邮箱批次、查找进度与结果 | independent email lookup, lookup batches | `tools/creator-email-lookup/SKILL.md` |
+| hashtag-deep-search | hashtag 研究、话题标签、标签推荐、内容方向找标签、标签研究进度与结果、下一批标签 | hashtag deep search, hashtag research, hashtag recommendations | `tools/hashtag-deep-search/SKILL.md` |
+| creator-profile-tagging | 达人画像、画像打标、给达人打标签、主页画像分析、打标批次进度与结果 | creator profile tagging, creator persona tagging, profile tagging batch | `tools/creator-profile-tagging/SKILL.md` |
+| logistics-tracking | 物流追踪、寄样运单、登记运单、查物流、签收情况、承运商、寄样跟进状态 | logistics tracking, shipment tracking, sample shipment, carrier | `tools/logistics-tracking/SKILL.md` |
 | creator-outreach | 发合作邮件、回复达人、邮件状态、沟通历史、首封模板、Agent 起草 | creator email outreach, reply, Smart Send, email template | `outreach/creator-outreach/SKILL.md` |
 
 ## Prerequisites
@@ -71,6 +84,14 @@ metadata:
 
 自然语言搜索、相似达人及四平台结构化列表共六个接口要求 `creator:search`。后端分别检查 Key 有效性、Key scope、服务端 scope 策略和用户 `Scout Discover` 权限；有 scope 不等于有业务权限。不需要 JWT、用户 ID、自报角色或额外 scope 请求头，普通搜索无需 `billing:read`，Skill 不自动创建 Key。
 
+独立邮箱查找五操作统一要求 `email-lookup` scope，并由服务端检查 `Scout Find Email` 与资源归属。旧 Key 不自动获得新 scope；202 仅受理，计费 null 不等于供应商免费。详见[邮箱查找子 Skill](tools/creator-email-lookup/SKILL.md)。
+
+Hashtag 深度搜索五操作统一要求 `hashtag-deep-search` scope，并由服务端检查 `Scout Hashtag Deep Search` 权限与任务归属。旧 Key 不自动获得新 scope；202 仅受理，计费 null 不等于免费。详见[Hashtag 深度搜索子 Skill](tools/hashtag-deep-search/SKILL.md)。
+
+达人画像打标七个操作统一要求 `creator-profile-tagging` scope，并由服务端检查达人画像打标权限与批次归属。旧 Key 不自动获得新 scope；批次和条目 ID 都是十进制字符串；202 仅受理，计费 null 不等于免费。详见[达人画像打标子 Skill](tools/creator-profile-tagging/SKILL.md)。
+
+物流追踪十一个操作统一要求 `logistics-tracking` scope，并由服务端检查物流权限与运单归属。旧 Key 不自动获得新 scope；成功均为 HTTP 200；运单上的扣费可能是历史回执，`meta` 账务字段为 null 不等于免费。详见[物流追踪子 Skill](tools/logistics-tracking/SKILL.md)。
+
 邮件需分别授权 `creator:outreach:read` 和 `creator:outreach:send`，send 不隐含 read。API Key 与操作 scope 始终校验；只有 `influxai` Billing 模式额外校验 `creator.outreach` 产品权益，`legacy` 模式不检查该新权益。邮件参数见 [邮件子 Skill](outreach/creator-outreach/SKILL.md)，响应见 [API 参考](references/api-reference.md#邮件建联接口)，错误处理见 [错误码参考](references/error-codes.md#邮件建联错误与重试)。
 
 ## Error Handling
@@ -80,12 +101,20 @@ metadata:
 ## References
 
 子 Skill：
+- [独立邮箱查找子 Skill](tools/creator-email-lookup/SKILL.md)
+- [Hashtag 深度搜索子 Skill](tools/hashtag-deep-search/SKILL.md)
+- [达人画像打标子 Skill](tools/creator-profile-tagging/SKILL.md)
+- [物流追踪子 Skill](tools/logistics-tracking/SKILL.md)
 - [自然语言找达人子 Skill（NL 搜索 / seed_creators）](discovery/creator-nl-search/SKILL.md)
 - [达人搜索子 Skill（结构化列表 / 品牌合作 / 实时提及）](discovery/creator-search/SKILL.md)
 - [相似达人子 Skill](discovery/creator-lookalike/SKILL.md)
 - [邮件建联子 Skill](outreach/creator-outreach/SKILL.md)
 
 参考资料（`references/`）：
+- [独立邮箱查找契约](references/email-lookup.md)
+- [Hashtag 深度搜索契约](references/hashtag-deep-search.md)
+- [达人画像打标契约](references/creator-profile-tagging.md)
+- [物流追踪契约](references/logistics-tracking.md)
 - [API 参考（端点 / 协议 / 响应结构）](references/api-reference.md)
 - [平台参数速查（结构化列表字段）](references/platform-params.md)
 - [错误码与状态参考](references/error-codes.md)

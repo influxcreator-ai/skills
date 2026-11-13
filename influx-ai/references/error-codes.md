@@ -101,3 +101,19 @@ Scout 的外层 `error.code` 约定为 `HTTP 状态码 * 100 + 1`。本轮认证
 Billing 行为依赖 `billing.backend`：Key 和 scope 始终校验，legacy 不检查新账本 `creator.outreach` 权益，influxai 模式才额外校验，相关拒绝可能返回 403 或依赖故障 503。业务用例仍可能通过 402 返回自己的支付/业务错误。429 的 Retry-After 仅在下游提供有限非负值时由服务端取整返回，配额拒绝可没有该头，不编造时长。
 
 没有 JSON 外壳的中断、超时、网关 HTML、未知 HTTP 或外壳不一致是本地传输/协议异常，保留已有 HTTP，不伪造后端码。涉及提交时保留结果未知，不自动重试或换键。合法 4xx 拒绝只说明当前请求被拒绝，不证明此前操作未发生。错误输出仅含安全类别、消息、已有状态码、诊断号及重试建议，不转储原始报文或请求头。
+
+## 独立邮箱查找
+
+五操作统一 `email-lookup` scope。错误、原 UUID 提交键与超时查询边界见[邮箱查找契约](email-lookup.md#错误与恢复)。不沿用搜索积分或品牌提及状态规则；预览不授权创建，202 仅受理，结果未知不自动重提。
+
+## Hashtag 深度搜索
+
+五操作统一 `hashtag-deep-search` scope。HTTP×100+1 的外层 code、受控 `reason`、`Retry-After` 和结果未知时的处理见[Hashtag 深度搜索契约](hashtag-deep-search.md#错误与恢复)。不沿用搜索积分规则；202 仅受理，submit、next、retry 结果未知时不自动重发、不换键，next 和 retry 不放进轮询或自动恢复。
+
+## 达人画像打标
+
+七操作统一 `creator-profile-tagging` scope。HTTP×100+1 的外层 code、受控 `reason`、`Retry-After` 和结果未知时的处理见[达人画像打标契约](creator-profile-tagging.md#错误与恢复)。不沿用搜索积分规则；202 仅受理，submit、retry 结果未知时不自动重发、不换键；非法主页统一报为 `Invalid request`，不能定位到具体行；`unknown` 条目可能已计费，不自动重试。
+
+## 物流追踪
+
+十一操作统一 `logistics-tracking` scope，成功均为 HTTP 200。HTTP×100+1 的外层 code、受控 `reason`、`Retry-After` 和结果未知时的处理见[物流追踪契约](logistics-tracking.md#错误与恢复)。409 `shipment_version_changed` 后不自动换版本重放；`registration_needs_confirmation` 不是确定失败；变更类操作结果未知时先读取最新状态，不自动重发或 retry。

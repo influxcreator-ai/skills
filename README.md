@@ -1,12 +1,12 @@
 # Influx AI Skills
 
-Influx AI 的 AI Agent Skills 仓库，当前提供达人发现与邮件建联能力。每个一级 Skill 目录都是一个可独立安装的完整 Skill。当前版本为 **0.3.0 / preview**。
+Influx AI 的 AI Agent Skills 仓库，当前提供达人发现、独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪与邮件建联能力。每个一级 Skill 目录都是一个可独立安装的完整 Skill。当前版本为 **0.4.0 / preview**。
 
 ## Skills 目录
 
 | Skill | 版本 | 主要能力 | 文档 |
 |-------|------|----------|------|
-| influx-ai | 0.3.0 · preview | 自然语言/结构化达人检索、相似达人、品牌合作与实时提及、邮件建联 | [查看说明](influx-ai/README.md) |
+| influx-ai | 0.4.0 · preview | 自然语言/结构化达人检索、相似达人、品牌合作与实时提及、独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪、邮件建联 | [查看说明](influx-ai/README.md) |
 
 ## 安装
 
@@ -66,6 +66,7 @@ skills/
     ├── skill.json
     ├── skill-manifest.json
     ├── discovery/
+    ├── tools/
     ├── outreach/
     ├── scripts/
     └── references/
@@ -73,7 +74,7 @@ skills/
 
 一级 Skill 目录中的 SKILL.md 是安装与发现入口；内部其他 SKILL.md 用于能力路由，不单独安装。安装完整 influx-ai 包以保留共享脚本和相对引用。
 
-维护者可对 scripts/*.mjs 执行 node --check，检查本地链接、文件清单与 SHA-256。skill-manifest.json 用于本项目完整性校验，不是 skills CLI 的复制过滤规则。内部测试和联调记录不随安装包发布。
+维护者可对 scripts/*.mjs 执行 node --check，并在 influx-ai/ 下运行 `node scripts/generate_manifest.mjs --check` 校验文件清单与 SHA-256。skill-manifest.json 用于本项目完整性校验，不是 skills CLI 的复制过滤规则。
 
 ## 安全说明
 

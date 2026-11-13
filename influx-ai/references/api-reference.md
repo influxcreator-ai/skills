@@ -1,6 +1,6 @@
 # API 参考（influx-ai → Scout OpenAPI）
 
-本文汇总达人发现与邮件建联的接口契约。达人发现说明见下文；邮件七项操作及响应见「[邮件建联接口](#邮件建联接口)」，使用流程与参数见 [邮件子 Skill](../outreach/creator-outreach/SKILL.md)，错误与重试见 [错误码参考](error-codes.md#邮件建联错误与重试)。
+本文汇总达人发现与邮件建联的接口契约；独立邮箱查找五操作、`email-lookup` scope、202 受理及 page_size 分页另见[邮箱查找契约](email-lookup.md)；Hashtag 深度搜索五操作和 `hashtag-deep-search` scope 另见[Hashtag 深度搜索契约](hashtag-deep-search.md)；达人画像打标七操作和 `creator-profile-tagging` scope 另见[达人画像打标契约](creator-profile-tagging.md)；物流追踪十一操作和 `logistics-tracking` scope 另见[物流追踪契约](logistics-tracking.md)。达人发现说明见下文；邮件七项操作及响应见「[邮件建联接口](#邮件建联接口)」，使用流程与参数见 [邮件子 Skill](../outreach/creator-outreach/SKILL.md)，错误与重试见 [错误码参考](error-codes.md#邮件建联错误与重试)。
 
 ## 协议
 
@@ -10,8 +10,8 @@
 | 协议 | HTTP/HTTPS |
 | 格式 | JSON（`Content-Type: application/json`） |
 | 鉴权 | **必填**：每次请求带 `X-API-Key: <SCOUT_API_KEY>`；身份由后端按 Key 解析，不传用户 ID、不使用 `X-User-Identity` |
-| Scope | 达人发现 10 个操作要求 `creator:search`；邮件分别要求 `creator:outreach:read` / `creator:outreach:send`，见下方邮件操作表 |
-| 分页 | `page`（从 1 起）、`size` |
+| Scope | 达人发现 10 个操作要求 `creator:search`；邮件分别要求 `creator:outreach:read` / `creator:outreach:send`；独立邮箱查找统一 `email-lookup`，详见各操作参考 |
+| 分页 | 发现列表用 `page`（从 1 起）、`size`；独立邮箱查找用 `page/page_size` |
 
 ## 端点总览
 

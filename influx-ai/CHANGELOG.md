@@ -4,6 +4,19 @@
 
 ---
 
+## v0.4.0 - preview（2026-11-12）
+
+- 新增独立邮箱查找子 Skill、五个 POST 操作及契约参考，统一 `email-lookup` scope。
+- 保留 create 202 受理、外查默认开启、原 UUID 提交键、输入/执行计数与条目状态语义；不自动重提或换键。
+- 新增 Hashtag 深度搜索子 Skill、五个 POST 操作及契约参考，统一 `hashtag-deep-search` scope。
+- submit、next、retry 返回 202 仅受理；`get --wait` 每 2 秒查询一次、最多 30 次，预算用完后返回任务 ID、状态和后续查询方式；next、retry 只按用户明确要求运行，不自动轮询或恢复。
+- 最终结果以 `selected_candidate_ids` 为准；账务字段为 null，不代表免费。
+- 新增达人画像打标子 Skill、七个 POST 操作及契约参考，统一 `creator-profile-tagging` scope；批次和条目 ID 一律使用十进制字符串。
+- submit、retry 返回 202 仅受理；`get_batch --wait` 每 2 秒查询一次、最多 30 次；画像状态与后台采集状态分开报告；`reused` 结果保留原获得时间，不当作本次新分析；`unknown` 条目可能已计费，retry 只按用户明确要求运行。
+- 新增物流追踪子 Skill、十一个 POST 操作及契约参考，统一 `logistics-tracking` scope；列表沿用 `page` / `size`。
+- 登记保持原 `operation_id`，变更携带最新 `version`，409 后不自动重放；refresh 不作为普通查询或轮询；retry 执行原未完成动作，只按用户明确要求运行。注册、运输、追踪、人工跟进与账务分别报告，运单扣费可能是历史回执，`meta` 账务字段为 null 不代表免费。
+- 同步根路由、说明、元数据及完整性清单；保持 preview。
+
 ## v0.3.0 - preview
 
 ### 达人发现契约同步（2026-11-11）
