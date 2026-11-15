@@ -17,6 +17,8 @@
 - 登记保持原 `operation_id`，变更携带最新 `version`，409 后不自动重放；refresh 不作为普通查询或轮询；retry 执行原未完成动作，只按用户明确要求运行。注册、运输、追踪、人工跟进与账务分别报告，运单扣费可能是历史回执，`meta` 账务字段为 null 不代表免费。
 - 新增视频监控子 Skill、七个 POST 操作及契约参考，统一 `video-monitor` scope；`monitor_id` 与返回的 `id` 使用十进制字符串。
 - 注册成功或手动采集 `accepted=true` 不代表采集完成；默认监控 15 天、每 1440 分钟（24 小时）采集；修改期限必须显式选择新期限并携带读取到的截止时间，409 后不自动覆盖；list 与 get 不触发采集，get 可能回填达人快照；账务字段为 null 不代表免费。
+- 新增实时采集子 Skill、九个 POST 操作及契约参考：提交、关键词提交、状态、分页数据、导出字段、步骤、全部导出、中止和重试；路径统一为 `/openapi/v1/realtime-collection/tasks/`，scope 统一为 `realtime-collection:submit`、`keyword-submit`、`status`、`data`、`manage`，不再使用 `collection:*`。
+- 只在用户明确要求时提交、重试或中止，检索无结果不自动提交采集；提交后保存 `task_id`，没有任务历史列表；download 结果只写入本地文件；原四项与新增五项的错误格式分别处理；`credits_consumed` 为 0 或 null 都不代表免费。
 - 同步根路由、说明、元数据及完整性清单；保持 preview。
 
 ## v0.3.0 - preview

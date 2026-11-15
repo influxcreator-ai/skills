@@ -1,6 +1,6 @@
 # API 参考（influx-ai → Scout OpenAPI）
 
-本文汇总达人发现与邮件建联的接口契约；独立邮箱查找五操作、`email-lookup` scope、202 受理及 page_size 分页另见[邮箱查找契约](email-lookup.md)；Hashtag 深度搜索五操作和 `hashtag-deep-search` scope 另见[Hashtag 深度搜索契约](hashtag-deep-search.md)；达人画像打标七操作和 `creator-profile-tagging` scope 另见[达人画像打标契约](creator-profile-tagging.md)；物流追踪十一操作和 `logistics-tracking` scope 另见[物流追踪契约](logistics-tracking.md)；视频监控七操作和 `video-monitor` scope 另见[视频监控契约](video-monitor.md)。达人发现说明见下文；邮件七项操作及响应见「[邮件建联接口](#邮件建联接口)」，使用流程与参数见 [邮件子 Skill](../outreach/creator-outreach/SKILL.md)，错误与重试见 [错误码参考](error-codes.md#邮件建联错误与重试)。
+本文汇总达人发现与邮件建联的接口契约；独立邮箱查找五操作、`email-lookup` scope、202 受理及 page_size 分页另见[邮箱查找契约](email-lookup.md)；Hashtag 深度搜索五操作和 `hashtag-deep-search` scope 另见[Hashtag 深度搜索契约](hashtag-deep-search.md)；达人画像打标七操作和 `creator-profile-tagging` scope 另见[达人画像打标契约](creator-profile-tagging.md)；物流追踪十一操作和 `logistics-tracking` scope 另见[物流追踪契约](logistics-tracking.md)；视频监控七操作和 `video-monitor` scope 另见[视频监控契约](video-monitor.md)；实时采集九操作和五项 `realtime-collection:*` scope 另见[实时采集契约](realtime-collection.md)。达人发现说明见下文；邮件七项操作及响应见「[邮件建联接口](#邮件建联接口)」，使用流程与参数见 [邮件子 Skill](../outreach/creator-outreach/SKILL.md)，错误与重试见 [错误码参考](error-codes.md#邮件建联错误与重试)。
 
 ## 协议
 
