@@ -27,7 +27,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "bb69c9a85a2e28a86c53caa2d8d77328df39d4c2f1abefa9db750d3f8f8122ef"
+      "sha256": "4681fd9cc5ee00d15eb9f15da5b5a0ede7465975cf0c4e3442313ebd28149ac3"
     },
     {
       "path": "LICENSE",
@@ -35,11 +35,11 @@
     },
     {
       "path": "README.md",
-      "sha256": "997952de2166545171f5f0e5c6818c4480e51690c72034ae01482b4a8adb8117"
+      "sha256": "6beb49b50de069688fcc3d9fbb3d589babde0eda0d05df1a58b3b6f0ea5ab0f6"
     },
     {
       "path": "SKILL.md",
-      "sha256": "ca62ecf89747e5a7c17985055d36f6cb02084d9ce8d7a9c8b46d630378275118"
+      "sha256": "db5b84bb07b9b8a73d701c036c8283b0393885994180848533593c9ea7c6e49c"
     },
     {
       "path": "discovery/creator-lookalike/SKILL.md",
@@ -59,7 +59,11 @@
     },
     {
       "path": "references/api-reference.md",
-      "sha256": "d80f9a193331aeb5c3c917c3acc9c1ad4d7f926eeed1ecf9079bef30c0960213"
+      "sha256": "dca0b53d365455030f0531ee9283cce2fad5b37e8a054d85f7427ad75c0c5c57"
+    },
+    {
+      "path": "references/competitor-tracking.md",
+      "sha256": "7274fb935a696ca56ff5bfccf7af6246f6a64b8239428c4b2f7fb79b7ec8c69b"
     },
     {
       "path": "references/country-codes.md",
@@ -75,7 +79,7 @@
     },
     {
       "path": "references/error-codes.md",
-      "sha256": "dc9d84aaff0b30fb950fc8a86c8e8e3877795052860cd651ee1ed4a701f7b079"
+      "sha256": "b8ec5c96a27e6b90eff665b10273e73ea3c039b9e9c36155ba698dcd6b956d14"
     },
     {
       "path": "references/hashtag-deep-search.md",
@@ -108,6 +112,14 @@
     {
       "path": "scripts/_common.mjs",
       "sha256": "8e8bc757599c9511ec420d22b323ea26bc89f4b5ce92295064ca5f59049fade7"
+    },
+    {
+      "path": "scripts/_competitor_tracking_cli.mjs",
+      "sha256": "7fedb8ac9bc370056e039be6d04715e639c969dd4ea629b1b124f6825ab1b6dc"
+    },
+    {
+      "path": "scripts/_competitor_tracking_client.mjs",
+      "sha256": "9d9844ef432082a0ed5b945488a935838c91da9c294cbe6639eff7a2f57ab24a"
     },
     {
       "path": "scripts/_discovery_response.mjs",
@@ -168,6 +180,54 @@
     {
       "path": "scripts/_video_monitor_client.mjs",
       "sha256": "9a6e218da54c8145193baabc9ba6bc171d8600fe6c2f02c61f711e0616e7fde6"
+    },
+    {
+      "path": "scripts/competitor_tracking_archive.mjs",
+      "sha256": "50afa078a8b55088681d745fd6cda121cfb1095bfaa3b4e91c803c677d04486e"
+    },
+    {
+      "path": "scripts/competitor_tracking_brand_videos.mjs",
+      "sha256": "a0ca2e8a40554c22f4479a9c514041014841823b361cb5194aef7be2f148f439"
+    },
+    {
+      "path": "scripts/competitor_tracking_comments.mjs",
+      "sha256": "125c998a5e927ce2b2547573cbf30f37977eadba45c909f092f0f2b0a17a6ffd"
+    },
+    {
+      "path": "scripts/competitor_tracking_confirm_keywords.mjs",
+      "sha256": "187e8348db67b4d3fd65e8ebc6a98684822a137d00e3693e2e62b260fbd87f46"
+    },
+    {
+      "path": "scripts/competitor_tracking_create.mjs",
+      "sha256": "961abd3667ca8ad05c36d1a0dd6290aa97f91a19e1e14bd62cb0869ee2354239"
+    },
+    {
+      "path": "scripts/competitor_tracking_get.mjs",
+      "sha256": "faad89bdba47276483147171e38cbdf4d6e147506d84520203c0090fd9f0baad"
+    },
+    {
+      "path": "scripts/competitor_tracking_list.mjs",
+      "sha256": "7f6f76de81f12e5cfb5b5cd58a1b8e2daaf97da6adebe9462f0e6a5891d0d5be"
+    },
+    {
+      "path": "scripts/competitor_tracking_materialize.mjs",
+      "sha256": "ded3af33fc1946373cab6ab26809e86ba748248ff457ec41e09f4092cc3606ec"
+    },
+    {
+      "path": "scripts/competitor_tracking_refresh_brand_context.mjs",
+      "sha256": "3dee5300124c0a17f6ba383651a47b5bc52d84149eb94846eba08ff5b0b40f35"
+    },
+    {
+      "path": "scripts/competitor_tracking_refresh_existing_evidence.mjs",
+      "sha256": "8419b7708ce2061e63fe4ff063deb027b7e6521426c0a0ea72141a3365bc516b"
+    },
+    {
+      "path": "scripts/competitor_tracking_regenerate.mjs",
+      "sha256": "40157edea58293237895e632de0f6686fb1bdf20d2f4af22cf7e72901bdf7571"
+    },
+    {
+      "path": "scripts/competitor_tracking_report.mjs",
+      "sha256": "b8e5ed6bb075b6786f7490273c59b7f58d0b6c44df4639b1bf6c871b752d8fc9"
     },
     {
       "path": "scripts/email_lookup_create.mjs",
@@ -411,7 +471,11 @@
     },
     {
       "path": "skill.json",
-      "sha256": "5ad5ddcfe60363bb26da4f11a566a3f04afb550264a215dd18873c14913a7748"
+      "sha256": "d7cb4050ab95a195ca50eef8a79c7679d3086146079ae79b9bca7b5602e64c04"
+    },
+    {
+      "path": "tools/competitor-tracking/SKILL.md",
+      "sha256": "94887a46deeb0f36295f260a5390f84eb6d2c9b2cf8bc6d5d71b752a54e9f47c"
     },
     {
       "path": "tools/creator-email-lookup/SKILL.md",

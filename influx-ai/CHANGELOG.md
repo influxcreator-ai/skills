@@ -19,6 +19,8 @@
 - 注册成功或手动采集 `accepted=true` 不代表采集完成；默认监控 15 天、每 1440 分钟（24 小时）采集；修改期限必须显式选择新期限并携带读取到的截止时间，409 后不自动覆盖；list 与 get 不触发采集，get 可能回填达人快照；账务字段为 null 不代表免费。
 - 新增实时采集子 Skill、九个 POST 操作及契约参考：提交、关键词提交、状态、分页数据、导出字段、步骤、全部导出、中止和重试；路径统一为 `/openapi/v1/realtime-collection/tasks/`，scope 统一为 `realtime-collection:submit`、`keyword-submit`、`status`、`data`、`manage`，不再使用 `collection:*`。
 - 只在用户明确要求时提交、重试或中止，检索无结果不自动提交采集；提交后保存 `task_id`，没有任务历史列表；download 结果只写入本地文件；原四项与新增五项的错误格式分别处理；`credits_consumed` 为 0 或 null 都不代表免费。
+- 新增竞品追踪子 Skill（关键词研究）、十二个 POST 操作及契约参考，统一 `competitor-tracking` scope：创建并扩词、列表、详情、确认关键词、刷新品牌依据、正式报告、来源评论、品牌视频、补偿推进、重新生成、用现有证据刷新和归档。
+- create 必须带 Idempotency-Key，结果未知时用同一个键恢复；关键词和品牌依据由用户确认后才提交；读取不自动衔接动作；`completed` 不等于报告可交付，以 `report_state` 和正式交付校验为准；品牌视频只是展示，研究完成后每品牌最多六条；refresh-existing-evidence 返回 202 仅受理；账务字段为 null 不代表免费。
 - 同步根路由、说明、元数据及完整性清单；保持 preview。
 
 ## v0.3.0 - preview

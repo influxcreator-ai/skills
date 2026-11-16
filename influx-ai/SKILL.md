@@ -3,7 +3,7 @@ name: influx-ai
 description: |
   达人发现 Skill。支持自然语言查找 TikTok、Instagram、YouTube 达人，按结构化筛选条件分平台浏览
   TikTok/Instagram/YouTube/Twitter 达人库，按品牌查找公开合作达人，以及根据种子达人查找相似达人。
-  支持独立邮箱查找：预览、创建、进度、分页结果和本人历史；支持 Hashtag 深度搜索：按研究需求提交任务、查询进度与结果、本人历史、搜索下一批和重试；支持达人画像打标：提交主页批次、查询进度、条目与画像结果、本人历史和重试；支持物流追踪：登记寄样运单、查看列表、统计与轨迹，以及刷新、恢复、更换承运商、人工跟进、停止和删除；支持视频监控：注册视频监控、查看列表、快照与趋势，以及暂停／恢复、修改期限、归档和手动采集；支持实时采集：按主页链接、用户名、达人视频、作品链接或关键词提交采集任务，查询状态与步骤、分页读取或导出结果、查看导出字段，以及中止和重试；也支持达人邮件建联：首封、回复、Smart Send 预约、台账/会话查询及首封内容准备，调用 Scout OpenAPI。
+  支持独立邮箱查找：预览、创建、进度、分页结果和本人历史；支持 Hashtag 深度搜索：按研究需求提交任务、查询进度与结果、本人历史、搜索下一批和重试；支持达人画像打标：提交主页批次、查询进度、条目与画像结果、本人历史和重试；支持物流追踪：登记寄样运单、查看列表、统计与轨迹，以及刷新、恢复、更换承运商、人工跟进、停止和删除；支持视频监控：注册视频监控、查看列表、快照与趋势，以及暂停／恢复、修改期限、归档和手动采集；支持实时采集：按主页链接、用户名、达人视频、作品链接或关键词提交采集任务，查询状态与步骤、分页读取或导出结果、查看导出字段，以及中止和重试；支持竞品追踪的关键词研究：创建研究并扩词、确认关键词、查看进度、正式报告、来源评论与品牌视频，以及刷新、重新生成和归档；也支持达人邮件建联：首封、回复、Smart Send 预约、台账/会话查询及首封内容准备，调用 Scout OpenAPI。
 compatibility: Node.js 20.6+
 license: MIT-0
 metadata:
@@ -14,7 +14,7 @@ metadata:
 
 ## 强制执行边界
 
-根据用户的达人发现、独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪、视频监控、实时采集或邮件建联请求，选择对应子 Skill 和脚本。实时采集的提交、重试和中止只按用户明确意图执行；提交后保存返回的 `task_id`，不猜测任务 ID；达人检索无结果时不自动提交采集。物流追踪的登记、刷新、恢复、更换承运商、跟进修改、停止和删除只按用户明确意图执行，变更前读取最新 version，409 后不自动重放。视频监控的注册、暂停／恢复、修改期限、归档和手动采集只按用户明确意图执行，list 与 get 不触发采集。达人画像打标的 submit、retry 会产生外部打标和采集成本，只按用户明确意图运行；`unknown` 条目可能已计费，不自动重试。邮件发送、回复和预约须展示目标、主题、完整正文及模式，经用户确认后提交。Hashtag 深度搜索的 submit、next、retry 会产生模型和检索成本，只按用户明确意图运行，不放进轮询或自动恢复。接口无结果或不可用时，不未经用户同意改用公开网页搜索。
+根据用户的达人发现、独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪、视频监控、实时采集、竞品追踪或邮件建联请求，选择对应子 Skill 和脚本。竞品追踪的 create 会立即扩词并调用模型或搜索，一次逻辑创建保留同一个 Idempotency-Key；关键词和品牌依据由用户确认后才 confirm，不替用户设置已核对；get、report 等读取不自动衔接刷新、物化或重新生成。实时采集的提交、重试和中止只按用户明确意图执行；提交后保存返回的 `task_id`，不猜测任务 ID；达人检索无结果时不自动提交采集。物流追踪的登记、刷新、恢复、更换承运商、跟进修改、停止和删除只按用户明确意图执行，变更前读取最新 version，409 后不自动重放。视频监控的注册、暂停／恢复、修改期限、归档和手动采集只按用户明确意图执行，list 与 get 不触发采集。达人画像打标的 submit、retry 会产生外部打标和采集成本，只按用户明确意图运行；`unknown` 条目可能已计费，不自动重试。邮件发送、回复和预约须展示目标、主题、完整正文及模式，经用户确认后提交。Hashtag 深度搜索的 submit、next、retry 会产生模型和检索成本，只按用户明确意图运行，不放进轮询或自动恢复。接口无结果或不可用时，不未经用户同意改用公开网页搜索。
 
 ## 意图路由
 
@@ -24,6 +24,7 @@ metadata:
 - 登记寄给达人的样品运单、查物流进度和签收情况、看运单统计、管理寄样跟进状态，或刷新、恢复、更换承运商、停止、删除运单：加载 `tools/logistics-tracking/SKILL.md`，调用十一个 `scripts/logistics_*.mjs` 入口。
 - 持续跟踪指定视频的播放、点赞、评论等表现数据，查看视频监控列表、快照和趋势，或暂停／恢复、修改期限、归档、手动采集：加载 `tools/video-monitor/SKILL.md`，调用七个 `scripts/video_monitor_*.mjs` 入口。
 - 用户**明确要求实时采集**指定的主页链接、用户名、达人视频、作品链接或关键词，或查询、读取、导出、中止、重试已有的实时采集任务：加载 `tools/realtime-collection/SKILL.md`，调用九个 `scripts/realtime_collection_*.mjs` 入口。普通找达人仍走 discovery，检索无结果时先问用户，不自动转来提交采集；按品牌名查近期提及仍走 `creator-search` 的实时提及。
+- 做**竞品分析 / 品牌声量对比**：为本品牌和竞品各建词组，研究 hashtag、视频和评论并出对比报告，或查看、推进、重新生成、归档已有竞品研究：加载 `tools/competitor-tracking/SKILL.md`，调用十二个 `scripts/competitor_tracking_*.mjs` 入口。只研究某主题的 hashtag、不比较品牌，仍走 `hashtag-deep-search`；找品牌合作达人仍走 `creator-search`。
 
 - 发合作邮件、回复已有达人会话、查询邮件台账/沟通历史、读取/准备首封内容：加载 `outreach/creator-outreach/SKILL.md`。支持本地 Agent 起草、用户文案及 Scout 模板；需要已有活动/活动达人关系，搜索 uid 或邮箱不能直接发送。
 - 用**自然语言描述**内容方向/人设/风格/场景/产品适配找达人：加载 `discovery/creator-nl-search/SKILL.md`，调用 `scripts/search_creators_nl.mjs`。
@@ -65,6 +66,7 @@ metadata:
 | tools | logistics-tracking | 物流追踪：承运商查询、登记运单、列表、统计、轨迹详情、刷新、恢复、更换承运商、人工跟进、停止、删除 |
 | tools | video-monitor | 视频监控：注册、列表、快照与趋势详情、暂停／恢复、修改期限、归档、手动采集 |
 | tools | realtime-collection | 实时采集：按主页链接、用户名、达人视频、作品链接或关键词提交采集，状态、步骤、分页结果、导出字段、全部导出、中止、重试 |
+| tools | competitor-tracking | 竞品关键词研究：创建并扩词、列表、详情与进度、确认关键词、刷新品牌依据、正式报告、来源评论、品牌视频、补偿推进、重新生成、用现有证据刷新、归档 |
 | outreach | creator-outreach | 首封/批量/Smart Send、回复、台账/会话及首封模板/预览/生成 |
 
 ## 路由索引
@@ -80,6 +82,7 @@ metadata:
 | logistics-tracking | 物流追踪、寄样运单、登记运单、查物流、签收情况、承运商、寄样跟进状态 | logistics tracking, shipment tracking, sample shipment, carrier | `tools/logistics-tracking/SKILL.md` |
 | video-monitor | 视频监控、视频数据跟踪、播放量趋势、视频表现、手动采集 | video monitor, video tracking, video performance, view trend | `tools/video-monitor/SKILL.md` |
 | realtime-collection | 实时采集、采集主页/账号/用户名、采集达人视频、采集作品链接、关键词采集、采集任务进度与结果、导出采集结果 | realtime collection, collection task, keyword collection, export collection data | `tools/realtime-collection/SKILL.md` |
+| competitor-tracking | 竞品分析、竞品追踪、品牌声量对比、竞品 hashtag 研究、竞品报告、竞品研究进度 | competitor tracking, competitor analysis, brand share of voice, keyword study | `tools/competitor-tracking/SKILL.md` |
 | creator-outreach | 发合作邮件、回复达人、邮件状态、沟通历史、首封模板、Agent 起草 | creator email outreach, reply, Smart Send, email template | `outreach/creator-outreach/SKILL.md` |
 
 ## Prerequisites
@@ -102,6 +105,8 @@ Hashtag 深度搜索五操作统一要求 `hashtag-deep-search` scope，并由�
 
 实时采集九个操作分别要求 `realtime-collection:submit`、`realtime-collection:keyword-submit`、`realtime-collection:status`、`realtime-collection:data`、`realtime-collection:manage` 五项 scope，并由服务端检查实时采集权限；只能操作当前 Key 所属用户通过 OpenAPI 提交的任务。旧的 `collection:*` scope 不再有效。成功均为 HTTP 200，`submitted` 只表示受理；原四项的业务错误是 HTTP 400 加原业务码，新增五项是 HTTP×100+1；`credits_consumed` 为 0 或 null 都不代表免费。详见[实时采集子 Skill](tools/realtime-collection/SKILL.md)。
 
+竞品追踪十二个操作统一要求 `competitor-tracking` scope，并由服务端检查洞察或竞品追踪权限与研究归属。旧 Key 不自动获得新 scope；refresh-existing-evidence 成功为 HTTP 202，其余为 200；受理或 `completed` 不等于报告可交付，以 `result.report_state` 和 report 的正式交付校验为准；账务字段为 null 不等于免费。详见[竞品追踪子 Skill](tools/competitor-tracking/SKILL.md)。
+
 邮件需分别授权 `creator:outreach:read` 和 `creator:outreach:send`，send 不隐含 read。API Key 与操作 scope 始终校验；只有 `influxai` Billing 模式额外校验 `creator.outreach` 产品权益，`legacy` 模式不检查该新权益。邮件参数见 [邮件子 Skill](outreach/creator-outreach/SKILL.md)，响应见 [API 参考](references/api-reference.md#邮件建联接口)，错误处理见 [错误码参考](references/error-codes.md#邮件建联错误与重试)。
 
 ## Error Handling
@@ -117,6 +122,7 @@ Hashtag 深度搜索五操作统一要求 `hashtag-deep-search` scope，并由�
 - [物流追踪子 Skill](tools/logistics-tracking/SKILL.md)
 - [视频监控子 Skill](tools/video-monitor/SKILL.md)
 - [实时采集子 Skill](tools/realtime-collection/SKILL.md)
+- [竞品追踪子 Skill](tools/competitor-tracking/SKILL.md)
 - [自然语言找达人子 Skill（NL 搜索 / seed_creators）](discovery/creator-nl-search/SKILL.md)
 - [达人搜索子 Skill（结构化列表 / 品牌合作 / 实时提及）](discovery/creator-search/SKILL.md)
 - [相似达人子 Skill](discovery/creator-lookalike/SKILL.md)
@@ -129,6 +135,7 @@ Hashtag 深度搜索五操作统一要求 `hashtag-deep-search` scope，并由�
 - [物流追踪契约](references/logistics-tracking.md)
 - [视频监控契约](references/video-monitor.md)
 - [实时采集契约](references/realtime-collection.md)
+- [竞品追踪契约](references/competitor-tracking.md)
 - [API 参考（端点 / 协议 / 响应结构）](references/api-reference.md)
 - [平台参数速查（结构化列表字段）](references/platform-params.md)
 - [错误码与状态参考](references/error-codes.md)

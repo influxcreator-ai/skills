@@ -1,12 +1,12 @@
 # Influx AI Skills
 
-Influx AI 的 AI Agent Skills 仓库，当前提供达人发现、独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪、视频监控、实时采集与邮件建联能力。每个一级 Skill 目录都是一个可独立安装的完整 Skill。当前版本为 **0.4.0 / preview**。
+Influx AI 的 AI Agent Skills 仓库，当前提供达人发现、独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪、视频监控、实时采集、竞品追踪与邮件建联能力。每个一级 Skill 目录都是一个可独立安装的完整 Skill。当前版本为 **0.4.0 / preview**。
 
 ## Skills 目录
 
 | Skill | 版本 | 主要能力 | 文档 |
 |-------|------|----------|------|
-| influx-ai | 0.4.0 · preview | 自然语言/结构化达人检索、相似达人、品牌合作与实时提及、独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪、视频监控、实时采集、邮件建联 | [查看说明](influx-ai/README.md) |
+| influx-ai | 0.4.0 · preview | 自然语言/结构化达人检索、相似达人、品牌合作与实时提及、独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪、视频监控、实时采集、竞品追踪、邮件建联 | [查看说明](influx-ai/README.md) |
 
 ## 安装
 

@@ -125,3 +125,7 @@ Billing 行为依赖 `billing.backend`：Key 和 scope 始终校验，legacy 不
 ## 实时采集
 
 九操作分别要求五项 `realtime-collection:*` scope，成功均为 HTTP 200。两组错误格式不同，处理见[实时采集契约](realtime-collection.md#错误与恢复)：submit、keyword-submit、status、data 的业务拒绝是 HTTP 400 加原业务码（6001 已有进行中任务、6004 链接全部无效、6005 余额不足、6006 排队已满），不按 HTTP×100+1 解释；columns、steps、download、abort、retry 使用 HTTP×100+1 和受控 `reason`（`collection_task_not_found`、`collection_state_not_allowed`、`collection_provider_unavailable`）。409 不自动重试；提交、中止、重试结果未知时不自动重发，不换 `task_id` 重新提交。
+
+## 竞品追踪
+
+十二操作统一 `competitor-tracking` scope；refresh-existing-evidence 成功为 HTTP 202，其余为 200。HTTP×100+1 的外层 code、受控 `reason`（`study_not_found`、`study_creation_conflict`、`study_state_not_allowed`、`invalid_study_request`）和结果未知时的处理见[竞品追踪契约](competitor-tracking.md#错误与恢复)。确认关键词的阶段或品牌依据 revision 错误是 400，不是 409；report 返回 409 表示正式报告未通过交付校验；create 结果未知时用同一个 Idempotency-Key 重跑，不换键；其他动作结果未知时先 get，不自动重发。
