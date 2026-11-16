@@ -1,8 +1,8 @@
-# Influx AI 达人发现、邮箱查找、Hashtag 深度搜索、画像打标、物流追踪、视频监控、实时采集、竞品追踪与邮件建联 Skill
+# Influx AI 达人发现、邮箱查找、Hashtag 深度搜索、画像打标、物流追踪、视频监控、实时采集、竞品追踪、素材上传与邮件建联 Skill
 
 > **当前版本**：0.4.0 · **运行环境**：Node.js 20.6+ · **发布渠道**：preview
 
-`influx-ai` 通过 Scout OpenAPI 提供达人发现、独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪、视频监控、实时采集、竞品追踪与邮件建联。支持自然语言/结构化检索、相似达人、品牌合作与实时提及，按研究需求搜索 hashtag，为一批达人主页生成画像，追踪寄样运单，持续监控视频表现，按用户要求实时采集主页、视频或关键词，做竞品关键词研究与对比报告，以及首封发送、已有会话回复、发送台账和内容准备。
+`influx-ai` 通过 Scout OpenAPI 提供达人发现、独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪、视频监控、实时采集、竞品追踪、素材上传与邮件建联。支持自然语言/结构化检索、相似达人、品牌合作与实时提及，按研究需求搜索 hashtag，为一批达人主页生成画像，追踪寄样运单，持续监控视频表现，按用户要求实时采集主页、视频或关键词，做竞品关键词研究与对比报告，上传本地素材取得 oss_url，以及首封发送、已有会话回复、发送台账和内容准备。
 
 ## v0.4.0 更新
 
@@ -20,6 +20,8 @@
 - 提交、重试和中止只按用户明确要求运行，检索无结果不自动提交采集；提交后保存 `task_id`，没有任务历史列表；download 结果只写入本地文件；`credits_consumed` 为 0 或 null 都不代表免费。
 - 新增竞品追踪（关键词研究）十二操作：创建并扩词、列表、详情、确认关键词、刷新品牌依据、正式报告、来源评论、品牌视频、补偿推进、重新生成、用现有证据刷新与归档；统一 `competitor-tracking` scope。
 - create 必须带 Idempotency-Key；关键词和品牌依据由用户确认后才提交；`completed` 不等于报告可交付；账务字段为 null 不代表免费。
+- 新增通用素材上传两操作：上传单个文档、图片或视频，查询状态并取得私有 `oss_url`；scope 为 `media_uoload`。
+- submit 的 202 只表示受理；上传不触发分析或审核；`oss_url` 不能匿名下载；账务字段为 null 不代表免费。
 
 ### v0.3.0 既有能力
 
@@ -32,7 +34,7 @@
 
 ## 主要能力
 
-达人发现位于 `discovery/`，独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪、视频监控、实时采集与竞品追踪位于 `tools/`，邮件建联位于 `outreach/`：
+达人发现位于 `discovery/`，独立邮箱查找、Hashtag 深度搜索、达人画像打标、物流追踪、视频监控、实时采集、竞品追踪与素材上传位于 `tools/`，邮件建联位于 `outreach/`：
 
 | 子 Skill | 能力 | 入口脚本 |
 |----------|------|----------|
@@ -46,6 +48,7 @@
 | video-monitor | 视频表现监控：注册、列表、快照与趋势、暂停／恢复、修改期限、归档、手动采集 | `scripts/video_monitor_*.mjs` 七个入口 |
 | realtime-collection | 实时采集：按主页链接、用户名、达人视频、作品链接或关键词提交，状态、步骤、分页结果、导出字段、全部导出、中止、重试 | `scripts/realtime_collection_*.mjs` 九个入口 |
 | competitor-tracking | 竞品关键词研究：创建并扩词、确认关键词、进度、正式报告、来源评论、品牌视频、刷新、重新生成、归档 | `scripts/competitor_tracking_*.mjs` 十二个入口 |
+| media-upload | 通用素材上传：上传文档、图片或视频，查询状态并取得 oss_url | `scripts/media_upload_{submit,status}.mjs` |
 | creator-outreach | 首封/批量/Smart Send、回复、台账/会话、模板/预览/生成 | `scripts/outreach_*.mjs` 七个入口 |
 
 独立邮箱查找的参数、调用和副作用见[子 Skill](tools/creator-email-lookup/SKILL.md)与[契约参考](references/email-lookup.md)。仅 JSON paste 输入，不支持上传、导出、主动重试或发送；旧 Key 不会自动获得新 scope。
@@ -61,6 +64,8 @@ Hashtag 深度搜索的参数、调用和副作用见[子 Skill](tools/hashtag-d
 实时采集的参数、调用和副作用见[子 Skill](tools/realtime-collection/SKILL.md)与[契约参考](references/realtime-collection.md)。任务是异步的，`submitted` 只表示受理；提交后保存 `task_id` 续查；download 返回完整数据，大任务优先分页读取；retry 会重新采集整个任务，abort 不保证撤销在途采集；原四项与新增五项的错误格式分别处理。
 
 竞品追踪的参数、调用和副作用见[子 Skill](tools/competitor-tracking/SKILL.md)与[契约参考](references/competitor-tracking.md)。研究是异步的：create 立即扩词，用户确认关键词和品牌依据后才 confirm；读取不自动衔接刷新、物化或重新生成；报告以正式交付校验为准，品牌视频只是展示，研究完成后每品牌最多六条。
+
+素材上传的参数、调用和限制见[子 Skill](tools/media-upload/SKILL.md)与[契约参考](references/media-upload.md)。上传是异步的：submit 返回 202 后查询到 succeeded 才能使用 `oss_url`；上传只做文件传输，不分析或审核，使用素材的工具另有自己的限制。
 
 ## 平台支持
 
@@ -194,6 +199,7 @@ influx-ai/
 ├── tools/video-monitor/SKILL.md        # 视频监控
 ├── tools/realtime-collection/SKILL.md  # 实时采集
 ├── tools/competitor-tracking/SKILL.md  # 竞品追踪（关键词研究）
+├── tools/media-upload/SKILL.md         # 通用素材上传
 ├── README.md                          # 本文档
 ├── CHANGELOG.md                       # 版本更新记录
 ├── .gitignore                         # 本地文件排除规则
@@ -226,7 +232,9 @@ influx-ai/
     ├── _realtime_collection_client.mjs / _realtime_collection_cli.mjs
     ├── realtime_collection_{submit,keyword_submit,status,data,columns,steps,download,abort,retry}.mjs
     ├── _competitor_tracking_client.mjs / _competitor_tracking_cli.mjs
-    └── competitor_tracking_{create,list,get,confirm_keywords,refresh_brand_context,report,comments,brand_videos,materialize,regenerate,refresh_existing_evidence,archive}.mjs
+    ├── competitor_tracking_{create,list,get,confirm_keywords,refresh_brand_context,report,comments,brand_videos,materialize,regenerate,refresh_existing_evidence,archive}.mjs
+    ├── _media_upload_client.mjs / _media_upload_cli.mjs
+    └── media_upload_{submit,status}.mjs
 ```
 
 ## 输出口径与边界

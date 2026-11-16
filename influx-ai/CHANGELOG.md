@@ -21,6 +21,8 @@
 - 只在用户明确要求时提交、重试或中止，检索无结果不自动提交采集；提交后保存 `task_id`，没有任务历史列表；download 结果只写入本地文件；原四项与新增五项的错误格式分别处理；`credits_consumed` 为 0 或 null 都不代表免费。
 - 新增竞品追踪子 Skill（关键词研究）、十二个 POST 操作及契约参考，统一 `competitor-tracking` scope：创建并扩词、列表、详情、确认关键词、刷新品牌依据、正式报告、来源评论、品牌视频、补偿推进、重新生成、用现有证据刷新和归档。
 - create 必须带 Idempotency-Key，结果未知时用同一个键恢复；关键词和品牌依据由用户确认后才提交；读取不自动衔接动作；`completed` 不等于报告可交付，以 `report_state` 和正式交付校验为准；品牌视频只是展示，研究完成后每品牌最多六条；refresh-existing-evidence 返回 202 仅受理；账务字段为 null 不代表免费。
+- 新增通用素材上传子 Skill、两个操作及契约参考，scope 为 `media_uoload`：multipart 上传单个文档、图片或视频（默认 50 / 50 / 500 MiB），查询状态并取得私有 `oss_url`；不再使用 `/v1/files/*` 和 `files:upload`。
+- 文件以磁盘流发送并在本地比对大小与 SHA-256；submit 的 202 只表示受理，`--wait` 每 3 秒查询一次、最多 100 次；上传不触发分析或审核；账务字段为 null 不代表免费。
 - 同步根路由、说明、元数据及完整性清单；保持 preview。
 
 ## v0.3.0 - preview

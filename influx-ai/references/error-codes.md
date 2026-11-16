@@ -129,3 +129,7 @@ Billing 行为依赖 `billing.backend`：Key 和 scope 始终校验，legacy 不
 ## 竞品追踪
 
 十二操作统一 `competitor-tracking` scope；refresh-existing-evidence 成功为 HTTP 202，其余为 200。HTTP×100+1 的外层 code、受控 `reason`（`study_not_found`、`study_creation_conflict`、`study_state_not_allowed`、`invalid_study_request`）和结果未知时的处理见[竞品追踪契约](competitor-tracking.md#错误与恢复)。确认关键词的阶段或品牌依据 revision 错误是 400，不是 409；report 返回 409 表示正式报告未通过交付校验；create 结果未知时用同一个 Idempotency-Key 重跑，不换键；其他动作结果未知时先 get，不自动重发。
+
+## 素材上传
+
+两个操作要求 `media_uoload` scope；submit 成功为 HTTP 202，status 为 200。HTTP×100+1 的外层 code 和受控 `reason`（`upload_not_found`、`file_too_large`、`unsupported_file_type`、`invalid_filename`、`empty_file`、`invalid_multipart`、`upload_capacity_exceeded`、`upload_storage_unavailable`、`upload_status_unavailable`）见[素材上传契约](media-upload.md#错误与恢复)。上传失败不是 HTTP 错误，而是 status 返回 `failed` 和 `failure_code`；submit 结果未知时没有 `upload_id` 可查，不自动重传。

@@ -27,7 +27,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "4681fd9cc5ee00d15eb9f15da5b5a0ede7465975cf0c4e3442313ebd28149ac3"
+      "sha256": "2aa9c38d0d8b80fcb13cb40b76b433e164faea80fcdf80982a1075ff6301bd5b"
     },
     {
       "path": "LICENSE",
@@ -35,11 +35,11 @@
     },
     {
       "path": "README.md",
-      "sha256": "6beb49b50de069688fcc3d9fbb3d589babde0eda0d05df1a58b3b6f0ea5ab0f6"
+      "sha256": "b217626f403ce8081e012790b5016581ee3d4d8aed89bb7f4f8f6ad48dc4a311"
     },
     {
       "path": "SKILL.md",
-      "sha256": "db5b84bb07b9b8a73d701c036c8283b0393885994180848533593c9ea7c6e49c"
+      "sha256": "ed2fe8d0228e18929d6da22f2290c9a8fc89107a23e9199707a21fc8133526af"
     },
     {
       "path": "discovery/creator-lookalike/SKILL.md",
@@ -59,7 +59,7 @@
     },
     {
       "path": "references/api-reference.md",
-      "sha256": "dca0b53d365455030f0531ee9283cce2fad5b37e8a054d85f7427ad75c0c5c57"
+      "sha256": "4e935a9d075273577d4646ceb09df6140ad3300a9402e34c72b808f6adc50f61"
     },
     {
       "path": "references/competitor-tracking.md",
@@ -79,7 +79,7 @@
     },
     {
       "path": "references/error-codes.md",
-      "sha256": "b8ec5c96a27e6b90eff665b10273e73ea3c039b9e9c36155ba698dcd6b956d14"
+      "sha256": "d9dc77e1f263c0df8800d1f0a204112a0daf2995a60a0bd4cc3debbdd86c56ff"
     },
     {
       "path": "references/hashtag-deep-search.md",
@@ -96,6 +96,10 @@
     {
       "path": "references/logistics-tracking.md",
       "sha256": "357a34c1ca770c3ba8679249b6788d00ed15ed12f527db4609d35b2c68944d10"
+    },
+    {
+      "path": "references/media-upload.md",
+      "sha256": "53cf83a8a7b3b4a8925b0ee1bbebffe7a3ba58a82575b9f33756e118b34f5307"
     },
     {
       "path": "references/platform-params.md",
@@ -148,6 +152,14 @@
     {
       "path": "scripts/_logistics_client.mjs",
       "sha256": "c1a2cf380ff18a21303beffd29e61ab7e258dd4ef6ac6f2bd883a28cc4262088"
+    },
+    {
+      "path": "scripts/_media_upload_cli.mjs",
+      "sha256": "95a72165cbe28e335b4efc101706d97418d64a5265cbea3d2632e4acd3fe4a5e"
+    },
+    {
+      "path": "scripts/_media_upload_client.mjs",
+      "sha256": "e199173d2da6c93ae520d2621b4054fd64c2bbd045ba44b9de8848c9469fa169"
     },
     {
       "path": "scripts/_outreach_cli.mjs",
@@ -338,6 +350,14 @@
       "sha256": "61ab54bec35bcb8ef4b523b26825f528f1dc3124ab101e7393580f18ac6d364a"
     },
     {
+      "path": "scripts/media_upload_status.mjs",
+      "sha256": "d9c17f7d7a7ca49508fa346311bec88495ca76931d74bd92afb9bc5bf470dc5b"
+    },
+    {
+      "path": "scripts/media_upload_submit.mjs",
+      "sha256": "dc08a60783dd5e92e53ba307b1d9b7a851cf130a0a07acbac245bc9237b48c18"
+    },
+    {
       "path": "scripts/outreach_generate.mjs",
       "sha256": "3d6d495b796ebe6cdcd8a17e761b0e087e3a08beb18179e87a6dcb1e331d9fe7"
     },
@@ -471,7 +491,7 @@
     },
     {
       "path": "skill.json",
-      "sha256": "d7cb4050ab95a195ca50eef8a79c7679d3086146079ae79b9bca7b5602e64c04"
+      "sha256": "f9e85cfdce12c8f299808c8b837bbef661e247d5a723ec1ed42395f17e9ca471"
     },
     {
       "path": "tools/competitor-tracking/SKILL.md",
@@ -492,6 +512,10 @@
     {
       "path": "tools/logistics-tracking/SKILL.md",
       "sha256": "8a0a54d8ba264a517b2661842c57ff711dde98d1fc7c34c26486a2b61bb97b03"
+    },
+    {
+      "path": "tools/media-upload/SKILL.md",
+      "sha256": "ce843583972bb23653627b53cc21c8a6d6374a172a8d22ef1d37889cc737dc84"
     },
     {
       "path": "tools/realtime-collection/SKILL.md",
