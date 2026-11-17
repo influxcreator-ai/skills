@@ -12,7 +12,7 @@
 
 ## 端点与调用
 
-以下路径在 `{SCOUT_API_BASE_URL}/openapi/v1/media_uoload/` 下，使用 `X-API-Key`，要求 `media_uoload` scope（服务端正式拼写）。上传权限不包含任何分析或审核权限。
+以下路径在 `{SCOUT_API_BASE_URL}/openapi/v1/media_uoload/` 下，使用 `X-API-Key`，要求 `media_uoload` scope（服务端正式拼写）。上传权限不包含任何分析或审核权限。默认私有上传，可按需公开上传。
 
 | 后缀 | 脚本 | 请求格式 | 成功 |
 | --- | --- | --- | --- |
@@ -23,12 +23,15 @@
 
 ## 请求
 
-**submit**：multipart 里只能有一个 `file` 和一个 `file_type`，多余字段或多个文件返回 422 `invalid_multipart`。
+**submit**：multipart 里只能有一个 `file`、一个 `file_type` 和可选的一个 `public`，多余字段或多个文件返回 422 `invalid_multipart`。
 
 | 字段 | 约束 |
 | --- | --- |
 | `file` | 单个文件。文件名 1 到 255 字符，不能含路径或控制字符，只作展示；对象键由服务端生成 |
 | `file_type` | `document`、`image`、`video` |
+| `public` | 可选，默认 false（私有）。`true` 时对象公开，拿到 `oss_url` 的任何人都能匿名读取。脚本只在 `--public` 时发送 `public=true`，否则不发送 |
+
+公开与否由使用素材的工具决定：Brief 分析用私有上传；脚本与视频审核只接受 `public` 为 true 的成功回执。
 
 | 分类 | 允许扩展名 | 默认上限 |
 | --- | --- | --- |
@@ -53,8 +56,9 @@
 | `content_type` | 按扩展名确定的 MIME |
 | `size_bytes` | 服务端实际收到的字节数 |
 | `sha256` | 服务端实际收到的字节的 SHA-256（小写十六进制） |
+| `public` | 布尔值，是否公开上传；脚本要求它与请求一致，否则视为协议错误 |
 | `oss_key` | 成功时的对象键，只用于追踪 |
-| `oss_url` | 成功时的私有对象稳定地址，不是匿名下载授权 |
+| `oss_url` | 成功时的对象稳定地址。私有对象不是匿名下载授权；公开对象可被匿名读取 |
 | `failure_code` | 失败原因码 |
 | `failure_message` | 失败说明；超时时为“上传超时”，其他情况可为 null |
 

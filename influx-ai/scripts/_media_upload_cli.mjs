@@ -37,9 +37,14 @@ async function waitFor(active, uploadId, { stdout, stderr, sleep, wait }) {
     stderr(JSON.stringify({ error: { kind: 'upload_failed', upload_id: uploadId, failure_code, message: failureHint(failure_code) } }));
     return 1;
   }
-  stderr('上传完成。data.oss_url 是私有对象的稳定引用，不能匿名下载；只把它传给需要素材的工具。上传本身不会触发分析或审核。');
+  stderr(doneHint(response.data.public));
   return 0;
 }
+
+// Success hint depends on visibility: a public object is readable by anyone who has the URL.
+export const doneHint = isPublic => (isPublic
+  ? '上传完成。data.public=true：这是公开对象，拿到 data.oss_url 的任何人都能匿名读取，不要在无关场合转发；只把它传给需要公开素材的工具（如脚本与视频审核）。上传本身不会触发分析或审核。'
+  : '上传完成。data.oss_url 是私有对象的稳定引用，不能匿名下载；只把它传给需要素材的工具。上传本身不会触发分析或审核。');
 
 export async function runCli(operation, { args = process.argv.slice(2), env = process.env, client, stdout = console.log, stderr = console.error, sleep = delay, wait = WAIT } = {}) {
   try {
@@ -52,6 +57,7 @@ export async function runCli(operation, { args = process.argv.slice(2), env = pr
       if (arg === '--wait' && !options.wait) options.wait = true;
       else if (operation === 'submit' && arg === '--file') take('file');
       else if (operation === 'submit' && arg === '--type') take('type');
+      else if (operation === 'submit' && arg === '--public' && !options.public) options.public = true;
       else if (operation === 'status' && arg === '--input-file') take('inputFile');
       else if (operation === 'status' && !arg.startsWith('--') && inline === undefined) inline = arg;
       else throw new MediaUploadError('input', '调用参数无效');
@@ -59,7 +65,7 @@ export async function runCli(operation, { args = process.argv.slice(2), env = pr
     const active = client ?? createMediaUploadClient({ baseUrl: env.SCOUT_API_BASE_URL, apiKey: env.SCOUT_API_KEY });
     if (operation === 'submit') {
       if (options.file === undefined || options.type === undefined) throw new MediaUploadError('input', '使用 --file <本地文件> --type <document|image|video>');
-      const response = await active.submit(options.file, options.type);
+      const response = await active.submit(options.file, options.type, { public: options.public === true });
       if (options.wait) {
         stderr(JSON.stringify({ accepted: { upload_id: response.data.upload_id, message: '已受理，正在等待上传完成' } }));
         return await waitFor(active, response.data.upload_id, { stdout, stderr, sleep, wait });
@@ -79,7 +85,7 @@ export async function runCli(operation, { args = process.argv.slice(2), env = pr
     const { status, failure_code } = response.data;
     if (status === 'uploading') stderr('仍在上传；稍后再查同一个 upload_id，不要重新上传。');
     else if (status === 'failed') stderr(`failure_code=${failure_code}：${failureHint(failure_code)}`);
-    else stderr('上传完成。data.oss_url 是私有对象的稳定引用，不能匿名下载。');
+    else stderr(doneHint(response.data.public));
     return 0;
   } catch (error) {
     stderr(JSON.stringify({ error: safe(error) }));

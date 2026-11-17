@@ -31,7 +31,7 @@ function file(name, content = 'hello brief') {
 const DOC = file('brief.docx', 'docx-bytes-demo');
 
 const meta = (extra = {}) => ({ request_id: 'req-1', credits_consumed: null, billing_status: null, billing_operation_id: null, credits_remaining: -1, ...extra });
-const record = (over = {}) => ({ upload_id: UPLOAD, status: 'uploading', filename: 'brief.docx', file_type: 'document', content_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', size_bytes: DOC.size, sha256: DOC.sha, oss_key: null, oss_url: null, failure_code: null, ...over });
+const record = (over = {}) => ({ upload_id: UPLOAD, status: 'uploading', filename: 'brief.docx', file_type: 'document', public: false, content_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', size_bytes: DOC.size, sha256: DOC.sha, oss_key: null, oss_url: null, failure_code: null, ...over });
 const done = (over = {}) => record({ status: 'succeeded', oss_key: `skill-uploads/abc/${UPLOAD}.docx`, oss_url: `https://oss.example.com/skill-uploads/abc/${UPLOAD}.docx`, ...over });
 const ok = (data, extra) => ({ success: true, data, error: null, meta: meta(extra) });
 const fail = (status, message, extra) => ({ success: false, data: null, error: { code: status * 100 + 1, message }, meta: meta(extra) });
@@ -86,6 +86,39 @@ test('submit：multipart 只含一个 file 和一个 file_type，文件名为本
   assert.equal(Buffer.from(await sent.arrayBuffer()).toString(), 'docx-bytes-demo');
   assert.equal(call.url.includes(SECRET), false);
   assert.equal(result.data.status, 'uploading');
+});
+
+test('public：默认不发送 public 字段（服务端默认私有）；--public 时发送 public=true，回执的 public 必须与请求一致', async () => {
+  const priv = recorder(reply(202, ok(record())));
+  await make(priv.transport).submit(DOC.path, 'document');
+  assert.equal(priv.calls[0].init.body.has('public'), false);
+  const pub = recorder(reply(202, ok(record({ public: true }))));
+  await make(pub.transport).submit(DOC.path, 'document', { public: true });
+  assert.equal(pub.calls[0].init.body.get('public'), 'true');
+  assert.deepEqual([...pub.calls[0].init.body.keys()].sort(), ['file', 'file_type', 'public']);
+  await assert.rejects(make(recorder(reply(202, ok(record({ public: false })))).transport).submit(DOC.path, 'document', { public: true }), error => error.kind === 'protocol' && error.outcome === 'unknown');
+  await assert.rejects(make(recorder(reply(202, ok(record({ public: true })))).transport).submit(DOC.path, 'document'), error => error.kind === 'protocol');
+  await assert.rejects(make(recorder(reply(202, ok(record()))).transport).submit(DOC.path, 'document', { public: 'yes' }), error => error.kind === 'input');
+});
+
+test('public：回执缺少 public 字段或不是布尔值时视为协议错误', async () => {
+  for (const value of [undefined, 'true', null]) {
+    const data = done();
+    if (value === undefined) delete data.public; else data.public = value;
+    await assert.rejects(make(recorder(reply(200, ok(data))).transport).status({ upload_id: UPLOAD }), error => error.kind === 'protocol', String(value));
+  }
+});
+
+test('CLI --public：发送 public=true；成功提醒说明公开对象可被匿名读取', async () => {
+  const result = await run('submit', ['--file', DOC.path, '--type', 'document', '--public', '--wait'], [reply(202, ok(record({ public: true }))), reply(200, ok(done({ public: true })))]);
+  assert.equal(result.code, 0);
+  assert.equal(result.calls[0].init.body.get('public'), 'true');
+  assert.ok(result.err.at(-1).includes('匿名读取'));
+  const priv = await run('status', [JSON.stringify({ upload_id: UPLOAD })], reply(200, ok(done())));
+  assert.ok(priv.err.at(-1).includes('不能匿名下载'));
+  const twice = await run('submit', ['--file', DOC.path, '--type', 'document', '--public', '--public'], reply(202, ok(record({ public: true }))));
+  assert.equal(twice.code, 1);
+  assert.equal(twice.calls.length, 0);
 });
 
 test('submit：文件以磁盘 Blob 方式发送（openAsBlob），不预先整份读入', async () => {

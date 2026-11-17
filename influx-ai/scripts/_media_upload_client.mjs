@@ -65,8 +65,9 @@ export function prepareStatus(input) {
   return { upload_id: input.upload_id };
 }
 
-export function validateResult(data, { uploadId, expectStatus } = {}) {
+export function validateResult(data, { uploadId, expectStatus, expectPublic } = {}) {
   if (!object(data) || typeof data.upload_id !== 'string' || !UUID.test(data.upload_id) || (uploadId !== undefined && data.upload_id.toLowerCase() !== uploadId.toLowerCase())
+    || typeof data.public !== 'boolean' || (expectPublic !== undefined && data.public !== expectPublic)
     || !STATUSES.includes(data.status) || typeof data.filename !== 'string' || !Object.hasOwn(FORMATS, data.file_type) || typeof data.content_type !== 'string'
     || !Number.isSafeInteger(data.size_bytes) || data.size_bytes < 1 || typeof data.sha256 !== 'string' || !/^[0-9a-f]{64}$/.test(data.sha256)) protocol();
   if (expectStatus && data.status !== expectStatus) protocol();
@@ -131,16 +132,20 @@ export function createMediaUploadClient({ baseUrl, apiKey, transport, timeoutMs 
   }
 
   return {
-    async submit(path, fileType) {
+    // public=true makes the object anonymously readable by anyone holding the URL; only for materials the user agreed to publish.
+    async submit(path, fileType, { public: isPublic = false } = {}) {
+      if (typeof isPublic !== 'boolean') throw new MediaUploadError('input', 'public 只能是布尔值');
       const file = await inspectFile(path, fileType);
       const localSha = await sha256File(file.path);
       // File-backed Blob: the body is streamed from disk, not loaded into memory.
       const blob = await openBlob(file.path);
       const form = new FormData();
       form.append('file_type', fileType);
+      // The field is sent only when public; omitting it keeps the server default (private).
+      if (isPublic) form.append('public', 'true');
       form.append('file', blob, file.filename);
       const result = await call('submit', form, {}, uploadTimeoutMs);
-      try { validateResult(result.data, { expectStatus: 'uploading' }); } catch (error) { error.outcome = 'unknown'; throw error; }
+      try { validateResult(result.data, { expectStatus: 'uploading', expectPublic: isPublic }); } catch (error) { error.outcome = 'unknown'; throw error; }
       if (result.data.size_bytes !== file.size || result.data.sha256 !== localSha) {
         throw new MediaUploadError('integrity', '服务端收到的大小或 SHA-256 与本地文件不一致；不要使用这次结果，确认文件没有在上传中被修改后重新上传', { outcome: 'rejected', upload_id: result.data.upload_id });
       }
