@@ -23,6 +23,11 @@
 - create 必须带 Idempotency-Key，结果未知时用同一个键恢复；关键词和品牌依据由用户确认后才提交；读取不自动衔接动作；`completed` 不等于报告可交付，以 `report_state` 和正式交付校验为准；品牌视频只是展示，研究完成后每品牌最多六条；refresh-existing-evidence 返回 202 仅受理；账务字段为 null 不代表免费。
 - 新增通用素材上传子 Skill、两个操作及契约参考，scope 为 `media_uoload`：multipart 上传单个文档、图片或视频（默认 50 / 50 / 500 MiB），查询状态并取得私有 `oss_url`；不再使用 `/v1/files/*` 和 `files:upload`。
 - 文件以磁盘流发送并在本地比对大小与 SHA-256；submit 的 202 只表示受理，`--wait` 每 3 秒查询一次、最多 100 次；上传不触发分析或审核；账务字段为 null 不代表免费。
+- 新增 Brief 分析子 Skill、七个 POST 操作及契约参考，统一 `brief-analysis` scope：读取选项、提交、状态与报告、本人列表、编辑、重试和 Campaign 草稿投影；文件经素材上传取得 `oss_url` 后原样提交，支持 14 类文档与图片。
+- submit 必须带 Idempotency-Key，结果未知时用同一个键恢复；`task_id` 与 `id` 为十进制字符串；HTTP 200 不等于分析成功，以 `data.status` 为准；`status --wait` 每 5 秒查询一次、最多 60 次；edit 携带 `expected_version`；campaign-draft 不创建 Campaign，能否创建只看 `validation.is_valid`（`mode` 为 `submit`），`blocking_fields` 只标记多个独立活动，`unmapped_fact_ids` 的事实回查 `source_result`、不丢弃不补写；`annotations.status=extracted` 不等于已确认，人工确认看 `review_status`；账务字段为 null 不代表免费。
+- 新增脚本与视频审核子 Skill、九个 POST 操作及契约参考，统一 `video-script-audit` scope：创建独立审核、项目或项目下审核，项目列表与详情、项目下审核列表、本人历史，导入素材，执行 `parse_brief`、`script_qc`、`analyze_video`、`run_audit`，查询阶段状态和结果；不开放增强审核，没有报告导出。
+- 素材可以是公开外部链接，或以 `public=true` 上传后取得的原始 `oss_url`（导入时核对本人成功公开回执）；status 只报进度，result 是解析与审核结果的唯一出口；导入和执行成功不代表阶段完成，`status --wait` 每 10 秒查询一次、最多 60 次；`pending` 表示还没有记录；阶段失败即停，不自动重试；create、import、execute 结果未知时先查询再决定；账务字段为 null 不代表免费。
+- 素材上传新增 `--public`：默认不发送 `public` 字段（私有），加 `--public` 时公开上传，对象可被匿名读取；回执的 `public` 必须与请求一致。
 - 同步根路由、说明、元数据及完整性清单；保持 preview。
 
 ## v0.3.0 - preview

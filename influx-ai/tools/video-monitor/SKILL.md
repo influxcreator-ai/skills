@@ -101,7 +101,7 @@ node scripts/video_monitor_list.mjs --input-file local-requests/list.json
 | `status` | 监控生命周期：`active`、`paused`、`stopped`、`archived` |
 | `latest_run_status` | 运行状态，见“结果解释” |
 | `track_deadline`、`interval_minutes` | 截止时间（UTC）和采集间隔 |
-| `next_trigger_at`、`last_triggered_at` | 下次计划采集、上次采集时间 |
+| `next_trigger_at`、`last_triggered_at` | 下次、上次计划采集时间；手动 trigger 不一定改变它们，新数据是否到达看 `snapshot` |
 | `creator_snapshot` | 达人公开资料，可为 null |
 | `snapshot` | 最新一天的视频数据：播放、点赞、评论、分享、收藏、互动率等；没有时为 null |
 | `has_tracking_data` | 是否已有快照 |
@@ -221,7 +221,7 @@ node scripts/video_monitor_register.mjs --input-file local-requests/register.jso
 | 内容 | 怎么向用户说明 |
 | --- | --- |
 | `status` | 监控生命周期：`active` 采集中、`paused` 已暂停、`stopped` 已到期、`archived` 已归档 |
-| `latest_run_status` | 运行状态，和 `status` 分开说。`completed` 只表示已有快照，**不代表最近一次采集成功**；`collecting` 表示还在等数据 |
+| `latest_run_status` | 运行状态，和 `status` 分开说。`completed` **不代表最近一次采集成功**。有没有数据只看 `has_tracking_data` 和 `snapshot`，不要用这个字段判断 |
 | `snapshot` 为 null、`has_tracking_data` 为 false | 还没有数据，说明数据回流可能延迟 |
 | 窗口指标为 null | 说“暂无”，**不要说成 0** |
 | `trend` 为空 | 还没有按天的数据 |

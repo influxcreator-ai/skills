@@ -27,7 +27,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "2aa9c38d0d8b80fcb13cb40b76b433e164faea80fcdf80982a1075ff6301bd5b"
+      "sha256": "b2aaa80a89426d37596a2a38238ec8184b7c6c61df78f4a5c644c3a31269d7be"
     },
     {
       "path": "LICENSE",
@@ -35,11 +35,11 @@
     },
     {
       "path": "README.md",
-      "sha256": "b217626f403ce8081e012790b5016581ee3d4d8aed89bb7f4f8f6ad48dc4a311"
+      "sha256": "a81002a32b958e69a36164b09b093b35a2ee13c6d74cc7e773b508045b293af7"
     },
     {
       "path": "SKILL.md",
-      "sha256": "ed2fe8d0228e18929d6da22f2290c9a8fc89107a23e9199707a21fc8133526af"
+      "sha256": "cd8e0ab5a28eff8e3058c13b6b364d88dc7ab4f77e8bc49be834dfa51335996a"
     },
     {
       "path": "discovery/creator-lookalike/SKILL.md",
@@ -59,7 +59,11 @@
     },
     {
       "path": "references/api-reference.md",
-      "sha256": "4e935a9d075273577d4646ceb09df6140ad3300a9402e34c72b808f6adc50f61"
+      "sha256": "884e6d222adfc48f407725b537f7ce1c042521d0946658a5cd4502919c7b9604"
+    },
+    {
+      "path": "references/brief-analysis.md",
+      "sha256": "9e59293544fcf1a8d5d7799ad79853090f27cfa782a7135463d5c9063a8f79d9"
     },
     {
       "path": "references/competitor-tracking.md",
@@ -79,7 +83,7 @@
     },
     {
       "path": "references/error-codes.md",
-      "sha256": "d9dc77e1f263c0df8800d1f0a204112a0daf2995a60a0bd4cc3debbdd86c56ff"
+      "sha256": "2e076d37247e3c1ee17978792d3f7e8bc8594153fcaefa9f713b982b9b5d4d83"
     },
     {
       "path": "references/hashtag-deep-search.md",
@@ -99,7 +103,7 @@
     },
     {
       "path": "references/media-upload.md",
-      "sha256": "53cf83a8a7b3b4a8925b0ee1bbebffe7a3ba58a82575b9f33756e118b34f5307"
+      "sha256": "3dbd649961360a9d1e4015fd898a172dad22e55c180bdd1a9583007c15fc7ef8"
     },
     {
       "path": "references/platform-params.md",
@@ -112,6 +116,18 @@
     {
       "path": "references/video-monitor.md",
       "sha256": "5ed9919a9f343cbc0aadb89094e8a9373de30878327d4639e646e3084b2a5871"
+    },
+    {
+      "path": "references/video-script-audit.md",
+      "sha256": "fa32b05e12ffa51c991f10353ecf50f5bf2c614a55f754204e9db73387ae9e89"
+    },
+    {
+      "path": "scripts/_brief_analysis_cli.mjs",
+      "sha256": "541599e3f0485a88f176115945f2f61a0dadf5bcf9332b994632e11ee7358a26"
+    },
+    {
+      "path": "scripts/_brief_analysis_client.mjs",
+      "sha256": "01cb09dfb3f45d34b73db99cb13ab44807639c69cd251ae2594338fb459a23ea"
     },
     {
       "path": "scripts/_common.mjs",
@@ -155,11 +171,11 @@
     },
     {
       "path": "scripts/_media_upload_cli.mjs",
-      "sha256": "95a72165cbe28e335b4efc101706d97418d64a5265cbea3d2632e4acd3fe4a5e"
+      "sha256": "130eff505160a1bfbf7578054eaefabb65ffdb824e3840f4afb698d522e1ad2d"
     },
     {
       "path": "scripts/_media_upload_client.mjs",
-      "sha256": "e199173d2da6c93ae520d2621b4054fd64c2bbd045ba44b9de8848c9469fa169"
+      "sha256": "47da48516cc10e9ed1b3a8f754736c0bf73f1db57df940fae706e36e2b2537a8"
     },
     {
       "path": "scripts/_outreach_cli.mjs",
@@ -192,6 +208,42 @@
     {
       "path": "scripts/_video_monitor_client.mjs",
       "sha256": "9a6e218da54c8145193baabc9ba6bc171d8600fe6c2f02c61f711e0616e7fde6"
+    },
+    {
+      "path": "scripts/_video_script_audit_cli.mjs",
+      "sha256": "bb540841e040a3d443890e3f1c0811d680a753351cb09d2266008e7e46ca7e76"
+    },
+    {
+      "path": "scripts/_video_script_audit_client.mjs",
+      "sha256": "8d300e4231049e04d564bbe771f634051241de199beb10255e1e99532a2e9d30"
+    },
+    {
+      "path": "scripts/brief_analysis_campaign_draft.mjs",
+      "sha256": "d13e9f424806110c9f8103ea113ae47ecfaebb4544d991a8c84f58c790b30ca5"
+    },
+    {
+      "path": "scripts/brief_analysis_edit.mjs",
+      "sha256": "a4c1cf87d1073637756e4877b11110b5223f202558c1a52c5bdf08611b0f4448"
+    },
+    {
+      "path": "scripts/brief_analysis_list.mjs",
+      "sha256": "0322be93db30182a9b977e36f367d5e8e49ed5bdf558db4c3201df183e4d76db"
+    },
+    {
+      "path": "scripts/brief_analysis_options.mjs",
+      "sha256": "3f15f554e9c4d6911d266bc235f4584ae6839afd655e111c51cfc339610e745e"
+    },
+    {
+      "path": "scripts/brief_analysis_retry.mjs",
+      "sha256": "b86c082152597189c42e64d6ae2b3ea1b078ade364989565833de08dc66fb0d6"
+    },
+    {
+      "path": "scripts/brief_analysis_status.mjs",
+      "sha256": "01af9236231f81afaf0bf8758d382454f1546ee962a3e8156a031f70aabdf5e7"
+    },
+    {
+      "path": "scripts/brief_analysis_submit.mjs",
+      "sha256": "382b79ea23ffa719d3bf91ecbbbb85761db22775d4c4142cb83a7174a94f080a"
     },
     {
       "path": "scripts/competitor_tracking_archive.mjs",
@@ -490,8 +542,48 @@
       "sha256": "46e090c847fe8ffbe27b5b4aab01c8c56929177cd88bd3c2ec0a624bd1659df7"
     },
     {
+      "path": "scripts/video_script_audit_create.mjs",
+      "sha256": "18c792797fcf5bed66a7dd5a7a61608dbd050979aea460928c17453f58dd8a4f"
+    },
+    {
+      "path": "scripts/video_script_audit_execute.mjs",
+      "sha256": "0b32a74af3121487719ce955135870bf5d88b6ff3d4acdc2586e000cf43f3675"
+    },
+    {
+      "path": "scripts/video_script_audit_history.mjs",
+      "sha256": "196204e8805dc6b2a82a83de3b884d6b765605f32a46be1058d27640494f59c0"
+    },
+    {
+      "path": "scripts/video_script_audit_import.mjs",
+      "sha256": "1e04ccbb7b47f6b280f234f8e6acd9e8a0fee73a9fba91faa6519cd271c49d5f"
+    },
+    {
+      "path": "scripts/video_script_audit_projects_get.mjs",
+      "sha256": "f8495708198af7e956c4a0895a97251812453c57f18bac7de0b2995f308ab90b"
+    },
+    {
+      "path": "scripts/video_script_audit_projects_list.mjs",
+      "sha256": "d24ed036e62931eeeec33f2428fe796dc540041e54d5f54003a4a095571b2cbc"
+    },
+    {
+      "path": "scripts/video_script_audit_result.mjs",
+      "sha256": "ab331fbe1a40d009cee057923dd90a77b566316715773c173fce773feb79cbe7"
+    },
+    {
+      "path": "scripts/video_script_audit_sessions_list.mjs",
+      "sha256": "f9ee3cc171a14b672f8ba9593971dedae340cf0424cf7ed2395eeea40a364b9d"
+    },
+    {
+      "path": "scripts/video_script_audit_status.mjs",
+      "sha256": "f61d53853009bcef7c1419d16887fcff5505d6b8f36bcfa4c62fc79411eeaf28"
+    },
+    {
       "path": "skill.json",
-      "sha256": "f9e85cfdce12c8f299808c8b837bbef661e247d5a723ec1ed42395f17e9ca471"
+      "sha256": "d171896f4e13b797930ab3b325865645d3b2f34b3707a82c3de08a2c57d12bbb"
+    },
+    {
+      "path": "tools/brief-analysis/SKILL.md",
+      "sha256": "ecd9dcb33aa9a042af61191c5a1469c73991e8a3704bc51d91d11a7129f5a243"
     },
     {
       "path": "tools/competitor-tracking/SKILL.md",
@@ -515,7 +607,7 @@
     },
     {
       "path": "tools/media-upload/SKILL.md",
-      "sha256": "ce843583972bb23653627b53cc21c8a6d6374a172a8d22ef1d37889cc737dc84"
+      "sha256": "727c12872ce66140ee7352074d25bd1420721defc4743a0908e3bb0c40d70ccf"
     },
     {
       "path": "tools/realtime-collection/SKILL.md",
@@ -523,7 +615,11 @@
     },
     {
       "path": "tools/video-monitor/SKILL.md",
-      "sha256": "14cf2bc41b690a323ebbd78893bf046b546baedf632d31cf680f52e612270973"
+      "sha256": "b0547514e6c4bfa711c7bd825c6ce17fd85acae6f2968259e8b84a4ab1211225"
+    },
+    {
+      "path": "tools/video-script-audit/SKILL.md",
+      "sha256": "f730c487d895560f9420b18ec4128f987c0ff77c789ae55c050067ba031b0f69"
     }
   ],
   "purpose": "项目自身文件清单与 SHA-256 完整性校验；不作为 skills CLI 的复制过滤规则。",

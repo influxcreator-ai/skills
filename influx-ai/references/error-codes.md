@@ -133,3 +133,11 @@ Billing 行为依赖 `billing.backend`：Key 和 scope 始终校验，legacy 不
 ## 素材上传
 
 两个操作要求 `media_uoload` scope；submit 成功为 HTTP 202，status 为 200。HTTP×100+1 的外层 code 和受控 `reason`（`upload_not_found`、`file_too_large`、`unsupported_file_type`、`invalid_filename`、`empty_file`、`invalid_multipart`、`upload_capacity_exceeded`、`upload_storage_unavailable`、`upload_status_unavailable`）见[素材上传契约](media-upload.md#错误与恢复)。上传失败不是 HTTP 错误，而是 status 返回 `failed` 和 `failure_code`；submit 结果未知时没有 `upload_id` 可查，不自动重传。
+
+## Brief 分析
+
+七个操作要求 `brief-analysis` scope；submit、retry 成功为 HTTP 202，其余为 200。HTTP×100+1 的外层 code 和受控 `reason`（`task_not_found`、`invalid_brief_request`、`brief_state_conflict`、`brief_service_unavailable`、`upload_reference_not_found`、`upload_reference_not_ready`、`upload_reference_integrity_failed` 等）见[Brief 分析契约](brief-analysis.md#错误与恢复)。分析失败不是 HTTP 错误，而是 status 返回 `failed` 和 `error_code`；submit 结果未知时用同一个 Idempotency-Key 重跑，不换键；edit、retry 结果未知时先 status 核对。
+
+## 脚本与视频审核
+
+九个操作要求 `video-script-audit` scope，成功均为 HTTP 200。HTTP×100+1 的外层 code 和受控 `reason`（`session_not_found`、`invalid_audit_request`、`audit_state_not_allowed`、`upload_reference_not_found`、`upload_reference_not_ready`、`upload_status_unavailable`）见[脚本与视频审核契约](video-script-audit.md#错误与恢复)。本服务上传的素材未公开或回执不可用时返回 404 `upload_reference_not_found`，公开外链不核对回执；阶段前置条件不满足常见为 409 `audit_state_not_allowed`，但不是所有前置条件失败都返回 409，底层异常可能是 500。阶段失败不是 HTTP 错误，而是 status 返回失败状态和 `error_code`；create、import、execute 结果未知时先 history 或 status 核对，不自动重发。
