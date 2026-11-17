@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { readJsonArgument } from './_common.mjs';
 // 轮询实时品牌提及采集任务状态，每 60 秒查询一次，直到任务完成/失败/超时。
 // 设计参考 creator-scraper-cv/scripts/poll_task_status.mjs。
 //
@@ -29,9 +30,9 @@ function sleep(seconds) {
 
 let params;
 try {
-  params = JSON.parse(process.argv[2] ?? '');
+  params = JSON.parse(readJsonArgument());
 } catch {
-  fail('Pass a valid JSON object as the first argument.');
+  fail('Pass a JSON object as the single argument, or --input-file <UTF-8 JSON file>.');
 }
 if (!params || typeof params !== 'object' || Array.isArray(params)) {
   fail('Input must be a JSON object.');

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { readJsonArgument } from './_common.mjs';
 
 import { reportHttpError, reportBilling } from './_discovery_response.mjs';
 
@@ -107,9 +108,9 @@ function fail(message) {
 
 let input;
 try {
-  input = JSON.parse(process.argv[2] ?? '');
+  input = JSON.parse(readJsonArgument());
 } catch {
-  fail('Pass a valid JSON object as the first argument.');
+  fail('Pass a JSON object as the single argument, or --input-file <UTF-8 JSON file>.');
 }
 if (!input || typeof input !== 'object' || Array.isArray(input)) {
   fail('Input must be a JSON object.');

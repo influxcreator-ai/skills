@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { readJsonArgument } from './_common.mjs';
 
 import { reportHttpError, reportBilling, reportBusinessNotice } from './_discovery_response.mjs';
 
@@ -111,9 +112,9 @@ function validateRequest(params) {
 
 let params;
 try {
-  params = JSON.parse(process.argv[2] ?? '');
+  params = JSON.parse(readJsonArgument());
 } catch {
-  fail('Pass a valid JSON object as the first argument.');
+  fail('Pass a JSON object as the single argument, or --input-file <UTF-8 JSON file>.');
 }
 validateRequest(params);
 

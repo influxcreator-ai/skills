@@ -28,6 +28,8 @@
 - 新增脚本与视频审核子 Skill、九个 POST 操作及契约参考，统一 `video-script-audit` scope：创建独立审核、项目或项目下审核，项目列表与详情、项目下审核列表、本人历史，导入素材，执行 `parse_brief`、`script_qc`、`analyze_video`、`run_audit`，查询阶段状态和结果；不开放增强审核，没有报告导出。
 - 素材可以是公开外部链接，或以 `public=true` 上传后取得的原始 `oss_url`（导入时核对本人成功公开回执）；status 只报进度，result 是解析与审核结果的唯一出口；导入和执行成功不代表阶段完成，`status --wait` 每 10 秒查询一次、最多 60 次；`pending` 表示还没有记录；阶段失败即停，不自动重试；create、import、execute 结果未知时先查询再决定；账务字段为 null 不代表免费。
 - 素材上传新增 `--public`：默认不发送 `public` 字段（私有），加 `--public` 时公开上传，对象可被匿名读取；回执的 `public` 必须与请求一致。
+- 达人检索的八个脚本（自然语言、结构化列表、相似达人、品牌合作与实时提及）支持 `--input-file <UTF-8 JSON 文件>`，与其他工具一致；根 SKILL 补充通用传参说明及 Windows PowerShell 5.1 的注意事项。
+- 根 SKILL 新增“配置检查”：首次调用前只检查环境变量是否存在、不回显 Key；缺失时给出当前终端与长期生效的配置命令，提醒重启 Agent，不让用户在对话里粘贴 Key，不猜测服务地址；统一 401 / 403 的处理。README 补充长期配置与重启 Agent 的说明。
 - 同步根路由、说明、元数据及完整性清单；保持 preview。
 
 ## v0.3.0 - preview

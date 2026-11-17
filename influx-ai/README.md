@@ -129,6 +129,8 @@ export SCOUT_API_KEY='<your-scout-api-key>'
 
 统一使用服务宿主根地址，不附加 `/openapi`；脚本会自动拼接 `/openapi/v1/...` 路径（OpenAPI 子应用挂载在 `/openapi`），并对每次请求附加 `X-API-Key: <SCOUT_API_KEY>`。身份由后端根据 Key 解析，无需传用户 ID；缺少 `SCOUT_API_KEY` 时脚本会在本地直接报错、不发请求。Key 属于机密，仅放环境变量，勿写入代码、命令参数或日志；多用户场景各自使用自己的 Key。
 
+上面的 `$env:` 和 `export` 只对当前终端有效。需要长期生效时，Windows 用 `setx SCOUT_API_BASE_URL "<地址>"`、`setx SCOUT_API_KEY "<Key>"`，macOS / Linux 把 `export` 行写入 `~/.zshrc` 或 `~/.bashrc`。配置后请在已设置变量的终端里重新启动 AI Agent，已经在运行的 Agent 读不到之后才设置的变量。不要把 Key 粘贴到 Agent 对话里。
+
 ### 3. 在 AI Agent 中使用
 
 安装到支持 `SKILL.md` 的 AI Agent 环境后，用自然语言描述任务即可，例如：
