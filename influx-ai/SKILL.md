@@ -124,13 +124,8 @@ metadata:
    - 长期有效：Windows `setx SCOUT_API_KEY "<你的 Key>"`；macOS / Linux 把 `export` 行加入 `~/.zshrc` 或 `~/.bashrc`。
    - 配好后要从设置过变量的终端**重新启动 Agent**，已经在运行的 Agent 读不到之后才设置的变量。
 3. 不要让用户把 Key 粘贴到对话里。用户已经贴出时，不写进文件、命令参数或日志，并提醒用户之后轮换这个 Key。
-<<<<<<< HEAD
 4. 用户没有指定其他环境时，服务地址用正式环境 `https://service.influxcreator.com`。不要用网页前端地址（如 `app.influxcreator.com`），它不提供 OpenAPI。Key 由用户在 https://app.influxcreator.com/workroom/skills-hub 自行创建，Skill 不会代替用户创建。
 5. 各能力需要的 scope 不同，见下文。返回 401 表示 Key 缺失或失效，请用户更新 Key；返回 403 表示 Key 没有对应 scope 或账号没有权限，请用户到 Skills Hub 检查这个 Key 的权限。两种情况都不换别的 Key 重试。
-=======
-4. 用户没有指定其他环境时，服务地址用正式环境 `https://service.influxcreator.com`。不要用网页前端地址（如 `app.influxcreator.com`），它不提供 OpenAPI。Key 由服务管理员发放，Skill 不会创建 Key。
-5. 各能力需要的 scope 不同，见下文。返回 401 表示 Key 缺失或失效，请用户更新 Key；返回 403 表示 Key 没有对应 scope 或账号没有权限，请用户找管理员开通。两种情况都不换别的 Key 重试。
->>>>>>> 8bdaa1c6fb7535bd3da89cb8e22dd6db603a7008
 
 - 传参：所有脚本的 JSON 参数既可以作为单个参数直接传，也可以写进 UTF-8 文件（可带 BOM）后用 `--input-file <文件>` 传；素材上传的 submit 用 `--file`、`--type`，不收 JSON。Windows PowerShell 5.1 会吞掉内联 JSON 的内层引号，在这个环境里一律用 `--input-file`，并先执行 `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8`，否则 stderr 里的中文会乱码。
 - 用户身份由后端根据 Key 解析，无需传用户 ID。缺少变量时脚本会在本地直接报错、不发请求。Key 属于机密，只放在环境变量里；多用户场景各自使用自己的 Key。

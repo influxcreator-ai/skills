@@ -27,11 +27,7 @@
     },
     {
       "path": "CHANGELOG.md",
-<<<<<<< HEAD
       "sha256": "083bd23bec1045979d0aa1d9428a0a4f8b819edfad0feebe6ced8b294b5301f8"
-=======
-      "sha256": "11bad144e0c813c0e3f9f4d0fc402bc58f24e01c2fbd8f9004b0d182fd0926c1"
->>>>>>> 8bdaa1c6fb7535bd3da89cb8e22dd6db603a7008
     },
     {
       "path": "LICENSE",
@@ -39,19 +35,11 @@
     },
     {
       "path": "README.md",
-<<<<<<< HEAD
       "sha256": "5c347fc85bd248556878fddbfe0723aa4ee99e4e6dcaf7c453219a2d6e98a43c"
     },
     {
       "path": "SKILL.md",
       "sha256": "f20e8652c33b0ddaf10e3c5d04fecce8e4755856a2b07637100b4997676d12c9"
-=======
-      "sha256": "dd0391a66c3f8736f436dcd66500540e9b19c532425627e4ad102c99ca4de2a2"
-    },
-    {
-      "path": "SKILL.md",
-      "sha256": "537449e160f3c47320404e2385957a1b84c5798138b273bc48f5f4ca385e4045"
->>>>>>> 8bdaa1c6fb7535bd3da89cb8e22dd6db603a7008
     },
     {
       "path": "discovery/creator-lookalike/SKILL.md",
