@@ -126,16 +126,18 @@ ID 都是 UUID 字符串。分页：`page` 默认 1，至少 1；`size` 默认 2
 | `materials[]` | `material_type`（`brief` / `video`）、`doc_type`（`client` / `script`，视频为 null）、`filename`、`status`、`error_code` |
 | `stages` | 七个开放阶段，每项 `status`、`error_code`，`video_upload` 可另有 `duration_ms` |
 | `brief_parse` | `brand`、`product`、`selling_points`、`must_say`、`dont_say`、`must_show`、`dont_show`、`creative_requirements`、`publishing_requirements`；未解析时为空对象 |
-| `script_qc` | `overall_score`、`final_report`、`dimensions`（各维度 `score`、`status`、`summary`） |
-| `report` | `status`、`overall_verdict`、`overall_score`、`final_report`、`dimension_scores`（各维度 `score`、`status`、`summary`、`issues`、`strengths`）、`must_say`、`dont_say`、`must_show`、`dont_show`、`selling_point` |
+| `script_audit` | `overall_score`、`final_report`、`dimensions`（各维度 `score`、`status`、`summary`）、`html_report_url` |
+| `video_audit` | `status`、`overall_verdict`、`overall_score`、`final_report`、`dimension_scores`（各维度 `score`、`status`、`summary`、`issues`、`strengths`）、`must_say`、`dont_say`、`must_show`、`dont_show`、`selling_point`、`html_report_url` |
 
 `final_report`：`overall_result`、`overall_direction`、`revision_plan[]`（每项 `title`、`section`、`issues`、`actions`；没有独立标题时 `title` 为 null；`issues` 每项 `issue`、`priority`（如 `P0`、`P1`、`P2`）；`actions` 每项 `suggestion`）。
 
 `materials[].filename`：本服务上传的素材是上传时的原始文件名，Google Drive 视频是 Drive 里的文件名，Google Docs 是文档标题。较早导入、没有保存原名的素材仍是原来记录的名称（可能是 `<upload_id>.<扩展名>`），服务端不补写。
 
+`html_report_url`：可直接分享的 OSS HTML 报告地址，字符串；报告未生成时为 null。阶段名仍是 `script_qc`、`content_audit`，只有 result 的报告字段改名为 `script_audit`、`video_audit`。
+
 result 里的阶段状态与 status 来自同一处，两次请求之间可能因任务推进而不同。核对数组每项：`item`、`status`（如 `hit`、`partial_hit`、`miss`、`safe`）、`evidence`、`timestamp`。
 
-脚本校验：`session.session_id` 等于请求、`materials` 是数组且类型只有 `brief` / `video`、`stages` 七个阶段齐全、`brief_parse` / `script_qc` / `report` 是对象或为空。不返回原始 `result_data`、脚本全文和分段、重复的解析或质检结果、内部 ID 和 URL、计时、执行模式，以及可能与明细不一致的汇总指标。
+脚本校验：`session.session_id` 等于请求、`materials` 是数组且类型只有 `brief` / `video`、`stages` 七个阶段齐全、`brief_parse` 是对象或为空；`script_audit` / `video_audit` 是对象或为空，是对象时 `html_report_url` 必须是字符串或 null。带 `--output` 时，stdout 摘要含 `session_id`、各阶段状态、`video_audit_status`、`script_audit_html_report_url`、`video_audit_html_report_url`。除 `html_report_url` 外，不返回原始 `result_data`、脚本全文和分段、重复的解析或质检结果、内部 ID 和 URL（素材、视频、`source_url`、`oss_url`）、计时、执行模式，以及可能与明细不一致的汇总指标。
 
 ## 阶段与状态
 

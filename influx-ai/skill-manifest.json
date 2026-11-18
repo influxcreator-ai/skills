@@ -27,7 +27,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "083bd23bec1045979d0aa1d9428a0a4f8b819edfad0feebe6ced8b294b5301f8"
+      "sha256": "79b4e231c031776d9db9b242dafc094079431fbdf538c8ef8ef6770eccf6ba87"
     },
     {
       "path": "LICENSE",
@@ -119,7 +119,7 @@
     },
     {
       "path": "references/video-script-audit.md",
-      "sha256": "fa32b05e12ffa51c991f10353ecf50f5bf2c614a55f754204e9db73387ae9e89"
+      "sha256": "fd6ed15932c9614f33f92edfea8591e953036efdadb55108288cab38f3f4e5ff"
     },
     {
       "path": "scripts/_brief_analysis_cli.mjs",
@@ -211,11 +211,11 @@
     },
     {
       "path": "scripts/_video_script_audit_cli.mjs",
-      "sha256": "bb540841e040a3d443890e3f1c0811d680a753351cb09d2266008e7e46ca7e76"
+      "sha256": "817b1d1edb5049a76c2dcc068fd7ce85a04bc2834ca9cc51d9100c6cab3cc04c"
     },
     {
       "path": "scripts/_video_script_audit_client.mjs",
-      "sha256": "8d300e4231049e04d564bbe771f634051241de199beb10255e1e99532a2e9d30"
+      "sha256": "878c93effb22e8c33501c030d0267a7704f1a3effc48e463a497d8efafa0ea23"
     },
     {
       "path": "scripts/brief_analysis_campaign_draft.mjs",
@@ -619,7 +619,7 @@
     },
     {
       "path": "tools/video-script-audit/SKILL.md",
-      "sha256": "f730c487d895560f9420b18ec4128f987c0ff77c789ae55c050067ba031b0f69"
+      "sha256": "6d298ab5f9d796fdd4653e29dfc303986ef0f533864bc3b91bd3237da94d540c"
     }
   ],
   "purpose": "项目自身文件清单与 SHA-256 完整性校验；不作为 skills CLI 的复制过滤规则。",

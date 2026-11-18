@@ -1,6 +1,6 @@
 ---
 name: video-script-audit
-description: 按用户要求审核达人的视频脚本或成片是否符合客户 Brief：创建独立审核、项目或项目下审核，导入客户 Brief、脚本（pdf、docx、txt）或视频，分阶段执行 Brief 解析、脚本质检、视频分析和内容审核，并查询阶段状态、审核结果和历史会话。用户要检查脚本或视频是否符合 Brief、做内容合规审核，或查看以前的审核时使用。素材可以是公开外部链接（如 Google Docs、Google Drive），本地文件先通过 media-upload 以 --public 上传取得 oss_url。不提供增强审核和报告导出。
+description: 按用户要求审核达人的视频脚本或成片是否符合客户 Brief：创建独立审核、项目或项目下审核，导入客户 Brief、脚本（pdf、docx、txt）或视频，分阶段执行 Brief 解析、脚本质检、视频分析和内容审核，并查询阶段状态、审核结果和历史会话。用户要检查脚本或视频是否符合 Brief、做内容合规审核，或查看以前的审核时使用。素材可以是公开外部链接（如 Google Docs、Google Drive），本地文件先通过 media-upload 以 --public 上传取得 oss_url。不提供增强审核和报告导出；审核结果附带可分享的 HTML 报告链接。
 compatibility: Node.js 20.6+
 metadata:
   layer: tools
@@ -236,7 +236,7 @@ node scripts/video_script_audit_status.mjs --input-file local-requests/vsa-statu
 
 用途：读取会话当前的结果快照，是解析和审核结果的唯一出口。类型：只读，**不执行审核**。
 
-**输入**：`{"session_id": "<会话 ID>"}`。有内容审核报告时结果较大（可达几十 KB），加 `--output local-requests/vsa-result-<会话>.json`，只读取需要展示的部分。
+**输入**：`{"session_id": "<会话 ID>"}`。有内容审核报告时结果较大（可达几十 KB），加 `--output local-requests/vsa-result-<会话>.json`，只读取需要展示的部分；摘要里直接给出 `script_audit_html_report_url` 和 `video_audit_html_report_url`，不用为了链接去读文件。
 
 **输出（`data`）**：见“结果解释”。
 
@@ -250,12 +250,13 @@ result 的 `data`：
 | `materials[]` | 已导入的素材：`material_type`、`doc_type`（`client` / `script`，视频为 null）、`filename`（原始文件名；较早导入的素材可能是 `<upload_id>.<扩展名>`，这时用你知道的原文件名说明）、`status`、`error_code` |
 | `stages` | 七个阶段的 `status`、`error_code`（`video_upload` 可另有 `duration_ms`） |
 | `brief_parse` | 客户 Brief 解析出的要求：`brand`、`product`、`selling_points`、`must_say`、`dont_say`、`must_show`、`dont_show`、`creative_requirements`、`publishing_requirements`；还没解析时为空 |
-| `script_qc` | 脚本质检：`overall_score`、`final_report`、`dimensions`（各维度 `score`、`status`、`summary`） |
-| `report` | 内容审核：`status`（不是 `completed` 时报告还没出）、`overall_verdict`（如 `conditional_pass` 有条件通过）、`overall_score`、`final_report`、`dimension_scores`（各维度 `score`、`status`、`summary`、`issues`、`strengths`），以及 `must_say`、`dont_say`、`must_show`、`dont_show`、`selling_point` 逐条核对 |
+| `script_audit` | 脚本质检：`overall_score`、`final_report`、`dimensions`（各维度 `score`、`status`、`summary`），以及 `html_report_url` |
+| `video_audit` | 内容审核：`status`（不是 `completed` 时报告还没出）、`overall_verdict`（如 `conditional_pass` 有条件通过）、`overall_score`、`final_report`、`dimension_scores`（各维度 `score`、`status`、`summary`、`issues`、`strengths`），以及 `must_say`、`dont_say`、`must_show`、`dont_show`、`selling_point` 逐条核对，以及 `html_report_url` |
+| `html_report_url` | 可直接分享的 HTML 报告地址，原样交给用户；拿到链接的人都能打开，提醒用户只发给需要看的人。报告未生成时为 null，如实说“报告还没生成”，不要自己拼链接 |
 | `final_report` | `overall_result`（如“需修改”）、`overall_direction`（修改方向）、`revision_plan[]`：每条 `title`（可为 null，这时用 `section` 说明位置）、`section`、`issues[]`（`issue` 问题、`priority` 优先级如 `P0`）、`actions[]`（`suggestion` 修改建议） |
 | 逐条核对数组 | 每项 `item`、`status`（如 `hit`、`partial_hit`、`miss`、`safe`）、`evidence`、`timestamp` |
 | `error_code` | 失败原因码，原样告诉用户；服务端不返回错误原文 |
-| 素材地址 | 结果里不含链接，不要向用户编造链接 |
+| 其他链接 | 除两个 `html_report_url` 外，结果里不含素材、视频或内部地址，不要向用户编造链接 |
 
 没有出现的值（如 `overall_score` 为 null）就如实说“未给出”，不自行计算得分或补结论。
 
@@ -268,8 +269,8 @@ result 的 `data`：
 ```text
 审核 {会话名称}（{session_id}）｜{industry}｜素材 {原文件名}
 - Brief 解析：{brief_parse.status}
-- 脚本质检：{stages.script_qc.status}｜得分 {script_qc.overall_score}｜{overall_result}｜修改建议 {revision_plan 条数} 条（按 priority 列出 P0、P1）
-- 内容审核：{report.status}｜得分 {report.overall_score}｜结论 {report.overall_verdict}
+- 脚本质检：{stages.script_qc.status}｜得分 {script_audit.overall_score}｜{overall_result}｜修改建议 {revision_plan 条数} 条（按 priority 列出 P0、P1）｜报告 {script_audit.html_report_url 或 未生成}
+- 内容审核：{video_audit.status}｜得分 {video_audit.overall_score}｜结论 {video_audit.overall_verdict}｜报告 {video_audit.html_report_url 或 未生成}
 未完成或失败的阶段：{阶段：status / error_code}
 ```
 
@@ -303,7 +304,8 @@ result 的 `data`：
 - **按阶段顺序走，失败就停。** 不要跳过 Brief 解析直接审核，也不要在失败后自动重试。
 - **项目只放客户 Brief，项目下审核只放脚本和视频。** 放错返回 400。
 - **再导入视频会替换当前视频。**
-- **不提供增强审核和报告导出。** 用户要这些时说明本工具不支持。
+- **不提供增强审核和报告导出。** 用户要这些时说明本工具不支持。可分享的 HTML 报告只有 result 里的 `html_report_url`。
+- **result 的报告字段是 `script_audit` 和 `video_audit`。** 阶段名仍是 `script_qc`、`content_audit`，两者不要混用。
 - **项目下审核的 `session_type` 也是 `video_script_audit`。** 和独立审核只靠 `parent_id` 区分；history 按 `session_type` 筛选会把两者一起查出。
 - **积分字段为 null 不代表免费。**
 - **Windows PowerShell 5.1 会丢掉内联 JSON 的内层引号**，始终使用 `--input-file`。

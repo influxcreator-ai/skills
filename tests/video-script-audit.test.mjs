@@ -2,7 +2,7 @@
 // every request goes through an injected transport, and global fetch is replaced with a guard.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -26,7 +26,10 @@ const sessionView = (over = {}) => ({ session_id: SESSION, name: null, industry:
 const stageView = (stage, status = 'processing', over = {}) => ({ session_id: SESSION, stage, status, error_code: null, ...over });
 const STAGE_NAMES = ['brief_upload', 'brief_upload_script', 'brief_parse', 'script_qc', 'video_upload', 'video_analysis', 'content_audit'];
 const allStagesOf = (status = 'pending', over = {}) => Object.fromEntries(STAGE_NAMES.map(name => [name, { status, error_code: null, ...(over[name] ?? {}) }]));
-const resultView = (over = {}) => ({ session: { session_id: SESSION, name: null, session_type: 'video_script_audit', parent_id: null, industry: 'ecommerce', status: 'processing', created_at: '2026-11-16T12:00:00' }, materials: [], stages: allStagesOf('pending', { brief_parse: { status: 'completed' } }), brief_parse: {}, script_qc: { overall_score: null, final_report: { revision_plan: [] }, dimensions: {} }, report: { status: null, overall_verdict: null, overall_score: null, final_report: { revision_plan: [] }, dimension_scores: {}, must_say: [], dont_say: [], must_show: [], dont_show: [], selling_point: [] }, ...over });
+const resultView = (over = {}) => ({ session: { session_id: SESSION, name: null, session_type: 'video_script_audit', parent_id: null, industry: 'ecommerce', status: 'processing', created_at: '2026-11-16T12:00:00' }, materials: [], stages: allStagesOf('pending', { brief_parse: { status: 'completed' } }), brief_parse: {}, script_audit: { overall_score: null, final_report: { revision_plan: [] }, dimensions: {}, html_report_url: null }, video_audit: { status: null, overall_verdict: null, overall_score: null, final_report: { revision_plan: [] }, dimension_scores: {}, must_say: [], dont_say: [], must_show: [], dont_show: [], selling_point: [], html_report_url: null }, ...over });
+const SCRIPT_REPORT = `https://oss.example.com/content-audit-demo/${'3f2b8c1e-5d4a-4e6b-9c7d-1a2b3c4d5e6f'}/script-qc-report-a1b2.html`;
+const VIDEO_REPORT = `https://oss.example.com/content-audit-demo/${'3f2b8c1e-5d4a-4e6b-9c7d-1a2b3c4d5e6f'}/audit-report-c3d4.html`;
+const withReports = (script = SCRIPT_REPORT, video = VIDEO_REPORT) => { const v = resultView(); v.script_audit.html_report_url = script; v.video_audit.html_report_url = video; v.video_audit.status = 'completed'; return v; };
 const pageOf = items => ({ items, total: items.length, page: 1, size: 20 });
 const entries = {
   create: [{ mode: 'independent', industry: 'ecommerce' }, '/sessions/create', sessionView()],
@@ -244,7 +247,12 @@ const badResults = [
   ['result', resultView({ session: null })],
   ['result', resultView({ materials: null })],
   ['result', resultView({ materials: [{ material_type: 'image' }] })],
-  ['result', resultView({ report: [] })],
+  ['result', resultView({ video_audit: [] })],
+  ['result', resultView({ script_audit: 'x' })],
+  ['result', resultView({ script_audit: { overall_score: 1, final_report: {}, dimensions: {}, html_report_url: 5 } })],
+  ['result', resultView({ video_audit: { status: 'completed', html_report_url: { url: 'x' } } })],
+  ['result', resultView({ script_audit: { overall_score: 1, final_report: {}, dimensions: {} } })],
+  ['result', resultView({ brief_parse: [] })],
   ['result', []],
 ];
 for (const [operation, data] of badResults) {
@@ -409,15 +417,57 @@ test('--output：status 与 result 的完整响应写入文件，stdout 只给�
   const output = outPath();
   const done = await run('result', [...argsFor('result'), '--output', output], success('result'));
   assert.equal(done.code, 0);
-  assert.deepEqual(JSON.parse(done.out[0]).data, { output, session_id: SESSION, stages: Object.fromEntries(STAGE_NAMES.map(name => [name, name === 'brief_parse' ? 'completed' : 'pending'])), report_status: null });
+  assert.deepEqual(JSON.parse(done.out[0]).data, { output, session_id: SESSION, stages: Object.fromEntries(STAGE_NAMES.map(name => [name, name === 'brief_parse' ? 'completed' : 'pending'])), video_audit_status: null, script_audit_html_report_url: null, video_audit_html_report_url: null });
   assert.deepEqual(JSON.parse(readFileSync(output, 'utf8')).data, okFor('result'));
   const all = outPath();
   const stages = await run('status', ['--input-file', writeInput({ session_id: SESSION }), '--output', all], reply(200, ok({ session_id: SESSION, stages: allStagesOf('pending', { brief_upload: { status: 'completed' } }) })));
-  assert.deepEqual(JSON.parse(stages.out[0]).data, { output: all, session_id: SESSION, stages: Object.fromEntries(STAGE_NAMES.map(name => [name, name === 'brief_upload' ? 'completed' : 'pending'])), report_status: null });
+  assert.deepEqual(JSON.parse(stages.out[0]).data, { output: all, session_id: SESSION, stages: Object.fromEntries(STAGE_NAMES.map(name => [name, name === 'brief_upload' ? 'completed' : 'pending'])) });
   writeFileSync(output, 'keep');
   const again = await run('result', [...argsFor('result'), '--output', output], success('result'));
   assert.equal(again.code, 1);
   assert.equal(readFileSync(output, 'utf8'), 'keep');
+});
+
+test('result html_report_url：有效 URL 原样通过，--output 摘要直接给出两个报告链接', async () => {
+  const data = withReports();
+  const res = await make(recorder(reply(200, ok(data))).transport).execute('result', { session_id: SESSION });
+  assert.equal(res.data.script_audit.html_report_url, SCRIPT_REPORT);
+  assert.equal(res.data.video_audit.html_report_url, VIDEO_REPORT);
+  const output = outPath();
+  const done = await run('result', [...argsFor('result'), '--output', output], reply(200, ok(data)));
+  assert.equal(done.code, 0);
+  const summary = JSON.parse(done.out[0]).data;
+  assert.equal(summary.script_audit_html_report_url, SCRIPT_REPORT);
+  assert.equal(summary.video_audit_html_report_url, VIDEO_REPORT);
+  assert.equal(summary.video_audit_status, 'completed');
+});
+
+test('result html_report_url：报告未生成时为 null，摘要给 null；报告对象缺省或为 null 也接受', async () => {
+  const output = outPath();
+  const done = await run('result', [...argsFor('result'), '--output', output], reply(200, ok(withReports(null, null))));
+  assert.equal(done.code, 0);
+  const summary = JSON.parse(done.out[0]).data;
+  assert.equal(summary.script_audit_html_report_url, null);
+  assert.equal(summary.video_audit_html_report_url, null);
+  for (const over of [{ script_audit: null, video_audit: null }, { script_audit: undefined, video_audit: undefined }]) {
+    const data = resultView(over);
+    await make(recorder(reply(200, ok(data))).transport).execute('result', { session_id: SESSION });
+    const out = outPath();
+    const r = await run('result', [...argsFor('result'), '--output', out], reply(200, ok(data)));
+    assert.equal(JSON.parse(r.out[0]).data.video_audit_html_report_url, null, JSON.stringify(over));
+  }
+});
+
+test('result html_report_url：不是字符串或 null（数字、对象、缺失）视为协议错误，CLI 退出码 1 且不写文件', async () => {
+  for (const bad of [5, { href: SCRIPT_REPORT }, undefined]) {
+    const data = withReports();
+    if (bad === undefined) delete data.video_audit.html_report_url; else data.video_audit.html_report_url = bad;
+    await assert.rejects(make(recorder(reply(200, ok(data))).transport).execute('result', { session_id: SESSION }), error => error.kind === 'protocol', String(bad));
+    const output = outPath();
+    const r = await run('result', [...argsFor('result'), '--output', output], reply(200, ok(data)));
+    assert.equal(r.code, 1);
+    assert.equal(existsSync(output), false);
+  }
 });
 
 for (const [operation, [input]] of Object.entries(entries)) {

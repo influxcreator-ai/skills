@@ -135,6 +135,9 @@ function allStages(stages) {
   for (const name of STAGES) stageState(stages[name], name);
 }
 const optionalObject = value => value === null || value === undefined || object(value);
+// result.script_audit / video_audit: absent, null, or an object whose html_report_url is a string or null (never missing).
+const auditReport = value => value === null || value === undefined
+  || (object(value) && (value.html_report_url === null || typeof value.html_report_url === 'string'));
 export function validateResult(operation, data, request) {
   if (operation === 'create') {
     if (!object(data) || !isText(data.session_id) || !UUID.test(data.session_id) || !isText(data.status)) protocol();
@@ -154,7 +157,7 @@ export function validateResult(operation, data, request) {
     if (!object(data) || !object(data.session) || !sameId(data.session.session_id, request.session_id) || !Array.isArray(data.materials)) protocol();
     if (data.materials.some(item => !object(item) || !['brief', 'video'].includes(item.material_type))) protocol();
     allStages(data.stages);
-    if (![data.brief_parse, data.script_qc, data.report].every(optionalObject)) protocol();
+    if (!optionalObject(data.brief_parse) || ![data.script_audit, data.video_audit].every(auditReport)) protocol();
   } else protocol();
 }
 

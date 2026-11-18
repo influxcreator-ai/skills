@@ -27,14 +27,21 @@ const safe = error => (error instanceof VideoScriptAuditError
   ? Object.fromEntries(['kind', 'message', 'status', 'code', 'reason', 'request_id', 'retry_after', 'outcome'].filter(key => error[key] !== undefined).map(key => [key, error[key]]))
   : { kind: 'local', message: '本地操作失败，未输出原始异常' });
 
-async function emit(response, output, stdout, stderr, requestedStage) {
+async function emit(operation, response, output, stdout, stderr, requestedStage) {
   if (output === undefined) { stdout(JSON.stringify(response, null, 2)); return; }
   try { await writeFile(output, `${JSON.stringify(response, null, 2)}\n`, { encoding: 'utf8', flag: 'wx' }); }
   catch (error) { throw new VideoScriptAuditError('local', error?.code === 'EEXIST' ? '输出文件已存在，换一个文件名，不覆盖已有结果' : '无法写入输出文件'); }
   const d = response.data;
-  const summary = requestedStage === undefined && d.stages
-    ? { session_id: d.session_id ?? d.session?.session_id ?? null, stages: Object.fromEntries(Object.entries(d.stages).map(([name, value]) => [name, value?.status ?? null])), report_status: d.report?.status ?? null }
-    : { session_id: d.session_id ?? null, stage: requestedStage ?? null, status: d.status ?? null };
+  const stageStatuses = () => Object.fromEntries(Object.entries(d.stages).map(([name, value]) => [name, value?.status ?? null]));
+  // result summary carries the shareable HTML report links so they need not be read out of the file.
+  const summary = operation === 'result'
+    ? {
+      session_id: d.session?.session_id ?? null, stages: stageStatuses(), video_audit_status: d.video_audit?.status ?? null,
+      script_audit_html_report_url: d.script_audit?.html_report_url ?? null, video_audit_html_report_url: d.video_audit?.html_report_url ?? null,
+    }
+    : requestedStage === undefined && d.stages
+      ? { session_id: d.session_id ?? null, stages: stageStatuses() }
+      : { session_id: d.session_id ?? null, stage: requestedStage ?? null, status: d.status ?? null };
   stdout(JSON.stringify({ success: true, data: { output, ...summary }, meta: { request_id: response.meta.request_id } }, null, 2));
   stderr(`完整响应已写入 ${output}，stdout 只给摘要；只读取需要展示的部分，不要整份读进对话。`);
 }
@@ -70,7 +77,7 @@ export async function runCli(operation, { args = process.argv.slice(2), env = pr
         response = await active.execute('status', input);
       }
     }
-    await emit(response, options.output, stdout, stderr, operation === 'status' && input.stage ? input.stage : undefined);
+    await emit(operation, response, options.output, stdout, stderr, operation === 'status' && input.stage ? input.stage : undefined);
     if (notes[operation]) stderr(notes[operation]);
     if (operation === 'execute') stderr(`对应阶段：stage=${ACTION_STAGE[response.data.action]}。`);
     if (operation === 'status' && input.stage) {

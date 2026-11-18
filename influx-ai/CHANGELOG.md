@@ -32,6 +32,7 @@
 - 根 SKILL 新增“配置检查”：首次调用前只检查环境变量是否存在、不回显 Key；缺失时给出当前终端与长期生效的配置命令，提醒重启 Agent，不让用户在对话里粘贴 Key，不猜测服务地址；统一 401 / 403 的处理。README 补充长期配置与重启 Agent 的说明。
 - 写明正式服务根地址 `https://service.influxcreator.com`（不是网页前端地址），替换 README 中的占位地址；注明邮件建联暂未在正式环境开放；Key 由用户在 https://app.influxcreator.com/workroom/skills-hub 自行创建。
 - 安装来源迁移到 `influxcreator-ai/skills`，补充 Skills.sh 自动发现规则与 ClawHub 安装说明；根 SKILL 增加 ClawHub 可识别的版本、Node.js 与 `SCOUT_API_BASE_URL` / `SCOUT_API_KEY` 运行环境声明。
+- 脚本与视频审核 result 的报告字段改名：`script_qc` → `script_audit`、`report` → `video_audit`（阶段名不变）；两者新增可分享的 `html_report_url`（字符串或 null），`--output` 摘要直接给出两个报告链接。
 - 同步根路由、说明、元数据及完整性清单；保持 preview。
 
 ## v0.3.0 - preview
