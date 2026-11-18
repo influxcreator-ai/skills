@@ -115,7 +115,11 @@ ClawHub 首次发布后，也可以使用 `npx clawhub install influx-ai`，或�
 
 ### 2. 配置
 
+<<<<<<< HEAD
 influx-ai 调用 Scout OpenAPI，需配置服务地址与用户自己的 API Key。正式服务根地址为 `https://service.influxcreator.com`；Key 登录后在 https://app.influxcreator.com/workroom/skills-hub 自行创建。邮件建联暂未在正式环境开放。脚本不自动读取开发电脑上的凭据文件或 .env：
+=======
+influx-ai 调用 Scout OpenAPI，需配置服务地址与用户自己的 API Key。正式服务根地址为 `https://service.influxcreator.com`；Key 由服务管理员发放。邮件建联暂未在正式环境开放。脚本不自动读取开发电脑上的凭据文件或 .env：
+>>>>>>> 8bdaa1c6fb7535bd3da89cb8e22dd6db603a7008
 
 ```powershell
 # Windows PowerShell
@@ -291,9 +295,13 @@ npx skills update
 
 版本变化维护在 CHANGELOG.md。skill-manifest.json 仅记录本项目文件与 SHA-256，供自身完整性校验；skills CLI 不以它作为复制过滤规则。本地交流资料已放在 Skill 安装目录之外，不纳入安装包；后续联调记录也应保存在安装目录外。
 
+<<<<<<< HEAD
 本地检查可执行 `node --check scripts/outreach_send.mjs` 等语法检查，并核对包内链接和 manifest 哈希；检查过程无需调用真实业务接口。安装来源为 influxcreator-ai/skills；正式服务根地址为 `https://service.influxcreator.com`，Key 在 https://app.influxcreator.com/workroom/skills-hub 自行创建。当前保留 0.4.0 / preview，安装验证不代表目标服务已部署或所有业务能力已验收。
 
 Skills.sh 从公开 GitHub 仓库自动发现并统计真实安装；ClawHub 在新提交推送后按 semver 独立发布版本。发布 ClawHub 版本时需同时提供对应 GitHub 仓库与提交 SHA，便于用户核对来源。
+=======
+本地检查可执行 `node --check scripts/outreach_send.mjs` 等语法检查，并核对包内链接和 manifest 哈希；检查过程无需调用真实业务接口。安装来源为 xizi-9527/skills；正式服务根地址为 `https://service.influxcreator.com`，Key 由服务管理员发放。当前保留 0.4.0 / preview，安装验证不代表目标服务已部署或所有业务能力已验收。
+>>>>>>> 8bdaa1c6fb7535bd3da89cb8e22dd6db603a7008
 
 ## 安全说明
 
