@@ -46,9 +46,9 @@ npx skills update
 - Skill 脚本要求 Node.js 20.6+，使用内置模块，无需额外运行依赖。本机验证使用 Node.js 24.19.0。
 - 安装工具有独立要求：本次核对的 skills@1.7.6 要求 Node.js >=22.20.0；后续版本以工具自身要求为准。
 - 可访问目标 Scout OpenAPI 的网络环境。
-- 用户自己的有效 SCOUT_API_KEY，以及由服务管理员提供的正式服务根地址。
+- 正式服务根地址 `https://service.influxcreator.com`，以及用户自己的有效 SCOUT_API_KEY（登录后在 https://app.influxcreator.com/workroom/skills-hub 自行创建）。
 
-在受保护的运行环境配置 SCOUT_API_BASE_URL 与 SCOUT_API_KEY，详见 [配置说明](influx-ai/README.md#2-配置)。服务根地址不附加 /openapi。脚本经 X-API-Key 请求头认证，缺少 Key 时在本地报错。正式服务地址与 Key 申请入口尚未确定，不提供虚构地址。
+在受保护的运行环境配置 SCOUT_API_BASE_URL 与 SCOUT_API_KEY，详见 [配置说明](influx-ai/README.md#2-配置)。服务根地址不附加 /openapi。脚本经 X-API-Key 请求头认证，缺少 Key 时在本地报错。正式服务根地址为 `https://service.influxcreator.com`；邮件建联暂未在正式环境开放。Key 在 https://app.influxcreator.com/workroom/skills-hub 自行创建。
 
 安装后直接在 Agent 中描述需求，例如“找 20 位美国 TikTok 跑步达人”或“找和指定账号相似的达人”。邮件操作需提供实际业务引用并遵守发送确认流程。
 

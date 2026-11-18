@@ -113,17 +113,17 @@ npx skills list
 
 ### 2. 配置
 
-influx-ai 调用 Scout OpenAPI，需配置服务地址与用户自己的 API Key。正式服务根地址及 Key 申请方式由服务管理员提供，尚未确定的地址使用 `<SCOUT_SERVICE_ORIGIN>` 待替换项；不要直接执行占位配置。脚本不自动读取开发电脑上的凭据文件或 .env：
+influx-ai 调用 Scout OpenAPI，需配置服务地址与用户自己的 API Key。正式服务根地址为 `https://service.influxcreator.com`；Key 登录后在 https://app.influxcreator.com/workroom/skills-hub 自行创建。邮件建联暂未在正式环境开放。脚本不自动读取开发电脑上的凭据文件或 .env：
 
 ```powershell
 # Windows PowerShell
-$env:SCOUT_API_BASE_URL = "<SCOUT_SERVICE_ORIGIN>"
+$env:SCOUT_API_BASE_URL = "https://service.influxcreator.com"
 $env:SCOUT_API_KEY = "<your-scout-api-key>"
 ```
 
 ```bash
 # Linux / macOS
-export SCOUT_API_BASE_URL='<SCOUT_SERVICE_ORIGIN>'
+export SCOUT_API_BASE_URL='https://service.influxcreator.com'
 export SCOUT_API_KEY='<your-scout-api-key>'
 ```
 
@@ -289,7 +289,7 @@ npx skills update
 
 版本变化维护在 CHANGELOG.md。skill-manifest.json 仅记录本项目文件与 SHA-256，供自身完整性校验；skills CLI 不以它作为复制过滤规则。本地交流资料已放在 Skill 安装目录之外，不纳入安装包；后续联调记录也应保存在安装目录外。
 
-本地检查可执行 `node --check scripts/outreach_send.mjs` 等语法检查，并核对包内链接和 manifest 哈希；检查过程无需调用真实业务接口。安装来源为 xizi-9527/skills；正式服务根地址和 Key 申请方式仍待确定。当前保留 0.4.0 / preview，安装验证不代表目标服务已部署或所有业务能力已验收。
+本地检查可执行 `node --check scripts/outreach_send.mjs` 等语法检查，并核对包内链接和 manifest 哈希；检查过程无需调用真实业务接口。安装来源为 xizi-9527/skills；正式服务根地址为 `https://service.influxcreator.com`，Key 在 https://app.influxcreator.com/workroom/skills-hub 自行创建。当前保留 0.4.0 / preview，安装验证不代表目标服务已部署或所有业务能力已验收。
 
 ## 安全说明
 

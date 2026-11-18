@@ -97,18 +97,18 @@ metadata:
 ## Prerequisites
 
 - Node.js 20.6 或更高版本。
-- 环境变量 `SCOUT_API_BASE_URL`（服务根地址，不带 `/openapi`，脚本会自动拼接 `/openapi/v1/...`）和 `SCOUT_API_KEY`（用户自己的 Key，每次请求通过 `X-API-Key` 头发送）。
+- 环境变量 `SCOUT_API_BASE_URL`（服务根地址，不带 `/openapi`，脚本会自动拼接 `/openapi/v1/...`；正式环境为 `https://service.influxcreator.com`）和 `SCOUT_API_KEY`（用户自己的 Key，每次请求通过 `X-API-Key` 头发送）。
 
 **配置检查**（本次会话第一次调用脚本前做一次）：
 
 1. 只检查两个变量有没有值，不打印、不回显 Key。PowerShell：`[bool]$env:SCOUT_API_BASE_URL; [bool]$env:SCOUT_API_KEY`；bash：`[ -n "$SCOUT_API_BASE_URL" ] && [ -n "$SCOUT_API_KEY" ] && echo ok`。
-2. 任一项缺失就停下，告诉用户需要配置，并给出命令让用户**自己在终端执行**：
+2. 任一项缺失就停下，告诉用户需要配置。还没有 Key 的，请用户登录 https://app.influxcreator.com/workroom/skills-hub 自行创建。然后给出命令让用户**自己在终端执行**：
    - 只对当前终端有效：PowerShell `$env:SCOUT_API_KEY = "<你的 Key>"`；bash `export SCOUT_API_KEY='<你的 Key>'`（`SCOUT_API_BASE_URL` 同理）。
    - 长期有效：Windows `setx SCOUT_API_KEY "<你的 Key>"`；macOS / Linux 把 `export` 行加入 `~/.zshrc` 或 `~/.bashrc`。
    - 配好后要从设置过变量的终端**重新启动 Agent**，已经在运行的 Agent 读不到之后才设置的变量。
 3. 不要让用户把 Key 粘贴到对话里。用户已经贴出时，不写进文件、命令参数或日志，并提醒用户之后轮换这个 Key。
-4. 服务地址只用用户或服务管理员给的值，不猜测，也不用文档里的示例地址。Key 由服务管理员发放，Skill 不会创建 Key。
-5. 各能力需要的 scope 不同，见下文。返回 401 表示 Key 缺失或失效，请用户更新 Key；返回 403 表示 Key 没有对应 scope 或账号没有权限，请用户找管理员开通。两种情况都不换别的 Key 重试。
+4. 用户没有指定其他环境时，服务地址用正式环境 `https://service.influxcreator.com`。不要用网页前端地址（如 `app.influxcreator.com`），它不提供 OpenAPI。Key 由用户在 https://app.influxcreator.com/workroom/skills-hub 自行创建，Skill 不会代替用户创建。
+5. 各能力需要的 scope 不同，见下文。返回 401 表示 Key 缺失或失效，请用户更新 Key；返回 403 表示 Key 没有对应 scope 或账号没有权限，请用户到 Skills Hub 检查这个 Key 的权限。两种情况都不换别的 Key 重试。
 
 - 传参：所有脚本的 JSON 参数既可以作为单个参数直接传，也可以写进 UTF-8 文件（可带 BOM）后用 `--input-file <文件>` 传；素材上传的 submit 用 `--file`、`--type`，不收 JSON。Windows PowerShell 5.1 会吞掉内联 JSON 的内层引号，在这个环境里一律用 `--input-file`，并先执行 `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8`，否则 stderr 里的中文会乱码。
 - 用户身份由后端根据 Key 解析，无需传用户 ID。缺少变量时脚本会在本地直接报错、不发请求。Key 属于机密，只放在环境变量里；多用户场景各自使用自己的 Key。
@@ -135,7 +135,7 @@ Brief 分析七个操作要求 `brief-analysis` scope 和 Brief 分析权限，�
 
 脚本与视频审核九个操作要求 `video-script-audit` scope 和脚本视频审核权限，上传素材另需 `media_uoload`；只能操作本人的会话；导入本服务上传的素材时只认本人的公开上传。成功均为 HTTP 200；HTTP 200 不等于阶段完成，以 status 返回的阶段状态为准，`pending` 表示还没有记录；解析和审核结果只从 result 读取；账务字段为 null 不等于免费。详见[脚本与视频审核子 Skill](tools/video-script-audit/SKILL.md)。
 
-邮件需分别授权 `creator:outreach:read` 和 `creator:outreach:send`，send 不隐含 read。API Key 与操作 scope 始终校验；只有 `influxai` Billing 模式额外校验 `creator.outreach` 产品权益，`legacy` 模式不检查该新权益。邮件参数见 [邮件子 Skill](outreach/creator-outreach/SKILL.md)，响应见 [API 参考](references/api-reference.md#邮件建联接口)，错误处理见 [错误码参考](references/error-codes.md#邮件建联错误与重试)。
+邮件建联暂未在正式环境开放，正式环境调用会返回 404；如实告诉用户，不要重试或换地址。邮件需分别授权 `creator:outreach:read` 和 `creator:outreach:send`，send 不隐含 read。API Key 与操作 scope 始终校验；只有 `influxai` Billing 模式额外校验 `creator.outreach` 产品权益，`legacy` 模式不检查该新权益。邮件参数见 [邮件子 Skill](outreach/creator-outreach/SKILL.md)，响应见 [API 参考](references/api-reference.md#邮件建联接口)，错误处理见 [错误码参考](references/error-codes.md#邮件建联错误与重试)。
 
 ## Error Handling
 
