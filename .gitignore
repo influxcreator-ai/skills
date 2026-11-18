@@ -1,0 +1,3 @@
+# Local integration and acceptance records: never commit (they hold test IDs and request_ids).
+docs/*-validation.md
+docs/skill-acceptance-*.md
