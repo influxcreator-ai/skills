@@ -4,10 +4,27 @@ description: |
   达人发现 Skill。支持自然语言查找 TikTok、Instagram、YouTube 达人，按结构化筛选条件分平台浏览
   TikTok/Instagram/YouTube/Twitter 达人库，按品牌查找公开合作达人，以及根据种子达人查找相似达人。
   支持独立邮箱查找：预览、创建、进度、分页结果和本人历史；支持 Hashtag 深度搜索：按研究需求提交任务、查询进度与结果、本人历史、搜索下一批和重试；支持达人画像打标：提交主页批次、查询进度、条目与画像结果、本人历史和重试；支持物流追踪：登记寄样运单、查看列表、统计与轨迹，以及刷新、恢复、更换承运商、人工跟进、停止和删除；支持视频监控：注册视频监控、查看列表、快照与趋势，以及暂停／恢复、修改期限、归档和手动采集；支持实时采集：按主页链接、用户名、达人视频、作品链接或关键词提交采集任务，查询状态与步骤、分页读取或导出结果、查看导出字段，以及中止和重试；支持竞品追踪的关键词研究：创建研究并扩词、确认关键词、查看进度、正式报告、来源评论与品牌视频，以及刷新、重新生成和归档；支持 Brief 分析：上传 Brief 文件后提取结构化事实，查看进度与报告、编辑、重试，以及生成 Campaign 草稿投影；支持脚本与视频审核：创建审核会话或项目，导入公开外链或公开上传的 Brief、脚本或视频，分阶段执行解析、质检、视频分析和内容审核，查询状态、结果与历史；支持通用素材上传：把授权的本地文档、图片或视频上传（默认私有，可按需公开）并取得 oss_url；也支持达人邮件建联：首封、回复、Smart Send 预约、台账/会话查询及首封内容准备，调用 Scout OpenAPI。
+version: "0.4.0"
 compatibility: Node.js 20.6+
 license: MIT-0
 metadata:
   version: "0.4.0"
+  openclaw:
+    requires:
+      env:
+        - SCOUT_API_BASE_URL
+        - SCOUT_API_KEY
+      bins:
+        - node
+    primaryEnv: SCOUT_API_KEY
+    envVars:
+      - name: SCOUT_API_BASE_URL
+        required: true
+        description: Scout API origin without the /openapi suffix.
+      - name: SCOUT_API_KEY
+        required: true
+        description: Scout API key sent in the X-API-Key header.
+    homepage: https://github.com/influxcreator-ai/skills
 ---
 
 # Influx AI

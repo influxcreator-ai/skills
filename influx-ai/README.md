@@ -94,10 +94,10 @@ Brief 分析的参数、调用和副作用见[子 Skill](tools/brief-analysis/SK
 
 ### 1. 安装
 
-通过以下命令安装完整 influx-ai：
+通过 GitHub / Skills.sh 安装完整 influx-ai：
 
 ```bash
-npx skills add xizi-9527/skills --skill influx-ai
+npx skills add influxcreator-ai/skills --skill influx-ai
 ```
 
 安装时选择父 Skill influx-ai，子 Skill 和共享脚本作为完整包使用，不单独安装 creator-outreach。
@@ -105,11 +105,13 @@ npx skills add xizi-9527/skills --skill influx-ai
 查看仓库可用 Skill 和当前项目已安装内容：
 
 ```bash
-npx skills add xizi-9527/skills --list
+npx skills add influxcreator-ai/skills --list
 npx skills list
 ```
 
-安装工具与脚本运行要求分别计算：本次核对的 skills@1.7.6 要求 Node.js >=22.20.0；本 Skill 脚本要求 Node.js >=20.6，使用 Node 内置模块，无需额外安装运行依赖。使用后续 CLI 版本时，以其实际要求为准。
+ClawHub 首次发布后，也可以使用 `npx clawhub install influx-ai`，或在 OpenClaw 中运行 `openclaw skills install influx-ai`。
+
+安装工具与脚本运行要求分别计算：本次核对的 skills@1.9.0 要求 Node.js >=22.20.0；本 Skill 脚本要求 Node.js >=20.6，使用 Node 内置模块，无需额外安装运行依赖。使用后续 CLI 版本时，以其实际要求为准。
 
 ### 2. 配置
 
@@ -289,7 +291,9 @@ npx skills update
 
 版本变化维护在 CHANGELOG.md。skill-manifest.json 仅记录本项目文件与 SHA-256，供自身完整性校验；skills CLI 不以它作为复制过滤规则。本地交流资料已放在 Skill 安装目录之外，不纳入安装包；后续联调记录也应保存在安装目录外。
 
-本地检查可执行 `node --check scripts/outreach_send.mjs` 等语法检查，并核对包内链接和 manifest 哈希；检查过程无需调用真实业务接口。安装来源为 xizi-9527/skills；正式服务根地址为 `https://service.influxcreator.com`，Key 在 https://app.influxcreator.com/workroom/skills-hub 自行创建。当前保留 0.4.0 / preview，安装验证不代表目标服务已部署或所有业务能力已验收。
+本地检查可执行 `node --check scripts/outreach_send.mjs` 等语法检查，并核对包内链接和 manifest 哈希；检查过程无需调用真实业务接口。安装来源为 influxcreator-ai/skills；正式服务根地址为 `https://service.influxcreator.com`，Key 在 https://app.influxcreator.com/workroom/skills-hub 自行创建。当前保留 0.4.0 / preview，安装验证不代表目标服务已部署或所有业务能力已验收。
+
+Skills.sh 从公开 GitHub 仓库自动发现并统计真实安装；ClawHub 在新提交推送后按 semver 独立发布版本。发布 ClawHub 版本时需同时提供对应 GitHub 仓库与提交 SHA，便于用户核对来源。
 
 ## 安全说明
 

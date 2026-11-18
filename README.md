@@ -10,27 +10,35 @@ Influx AI 的 AI Agent Skills 仓库，当前提供达人发现、独立邮箱�
 
 ## 安装
 
-安装 influx-ai：
+通过 GitHub / Skills.sh 安装 influx-ai：
 
 ```bash
-npx skills add xizi-9527/skills --skill influx-ai
+npx skills add influxcreator-ai/skills --skill influx-ai
 ```
 
 安装前可查看仓库中可发现的 Skills：
 
 ```bash
-npx skills add xizi-9527/skills --list
+npx skills add influxcreator-ai/skills --list
 ```
 
 当前仓库只公开一个完整 Skill，也可以运行：
 
 ```bash
-npx skills add xizi-9527/skills
+npx skills add influxcreator-ai/skills
 ```
 
 也可以告诉支持 GitHub Skill 安装的 Agent：
 
-> 请从 GitHub 仓库 xizi-9527/skills 安装 influx-ai Skill。
+> 请从 GitHub 仓库 influxcreator-ai/skills 安装 influx-ai Skill。
+
+ClawHub 首次发布后，也可以安装：
+
+```bash
+npx clawhub install influx-ai
+```
+
+Skills.sh 会自动从公开 GitHub 仓库发现 Skill，首次真实安装后进入其索引。
 
 检查及更新已安装内容：
 
@@ -44,7 +52,7 @@ npx skills update
 ## 运行要求
 
 - Skill 脚本要求 Node.js 20.6+，使用内置模块，无需额外运行依赖。本机验证使用 Node.js 24.19.0。
-- 安装工具有独立要求：本次核对的 skills@1.7.6 要求 Node.js >=22.20.0；后续版本以工具自身要求为准。
+- 安装工具有独立要求：本次核对的 skills@1.9.0 要求 Node.js >=22.20.0；后续版本以工具自身要求为准。
 - 可访问目标 Scout OpenAPI 的网络环境。
 - 正式服务根地址 `https://service.influxcreator.com`，以及用户自己的有效 SCOUT_API_KEY（登录后在 https://app.influxcreator.com/workroom/skills-hub 自行创建）。
 
@@ -75,6 +83,8 @@ skills/
 一级 Skill 目录中的 SKILL.md 是安装与发现入口；内部其他 SKILL.md 用于能力路由，不单独安装。安装完整 influx-ai 包以保留共享脚本和相对引用。
 
 维护者可对 scripts/*.mjs 执行 node --check，并在 influx-ai/ 下运行 `node scripts/generate_manifest.mjs --check` 校验文件清单与 SHA-256。skill-manifest.json 用于本项目完整性校验，不是 skills CLI 的复制过滤规则。
+
+Skills.sh 没有独立发布命令：仓库公开且可被 `npx skills add influxcreator-ai/skills --list` 发现后，真实安装会触发匿名安装计数并建立索引。ClawHub 使用版本化发布，维护者在 `influx-ai/` 变更提交并推送后执行 `npx clawhub skill publish influx-ai --slug influx-ai --name "Influx AI" --version 0.4.0 --source-repo https://github.com/influxcreator-ai/skills --source-commit <commit> --source-path influx-ai --source-ref main`。
 
 ## 安全说明
 

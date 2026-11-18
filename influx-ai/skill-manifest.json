@@ -27,7 +27,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "51edbe2573b25ebdd34d2fedc6625655c54949633307275b409d2ac20b4c2414"
+      "sha256": "083bd23bec1045979d0aa1d9428a0a4f8b819edfad0feebe6ced8b294b5301f8"
     },
     {
       "path": "LICENSE",
@@ -35,11 +35,11 @@
     },
     {
       "path": "README.md",
-      "sha256": "c8b97494be48395782d39aa57d4d66430dfe900f6c1f7ed9fbbc1980d5fd0f19"
+      "sha256": "5c347fc85bd248556878fddbfe0723aa4ee99e4e6dcaf7c453219a2d6e98a43c"
     },
     {
       "path": "SKILL.md",
-      "sha256": "aadec02c196670dd5ec04eeb690e9410e6e4aa79d7106a8ee8ccd730b4eea061"
+      "sha256": "f20e8652c33b0ddaf10e3c5d04fecce8e4755856a2b07637100b4997676d12c9"
     },
     {
       "path": "discovery/creator-lookalike/SKILL.md",
@@ -579,7 +579,7 @@
     },
     {
       "path": "skill.json",
-      "sha256": "d171896f4e13b797930ab3b325865645d3b2f34b3707a82c3de08a2c57d12bbb"
+      "sha256": "f43f5d019fd2e047b2a40a09aded2950b4cec019d70b4054b8d4b68c4476120a"
     },
     {
       "path": "tools/brief-analysis/SKILL.md",
