@@ -174,9 +174,10 @@ node ../../scripts/get_brand_realtime_mention_results.mjs '{"task_id":"<task_id>
 3. 国家、语言多选使用逗号分隔的代码字符串（结构化列表，如 `country_code: "US,CA"`）；品牌合作的国家用 `country_codes` 数组。
 4. 日期统一传 `YYYY-MM-DD`。
 5. 只传目标平台支持的字段。四平台的播放量、互动率、受众语言等字段名并不完全相同（见下方各平台参数）。
-6. **GMV/GPM 等带货区间字段仅是筛选条件**：结构化列表的 TikTok 支持 `last30day_gmv_gte/_lte`、`last30day_gpm_gte/_lte` 等用于按范围筛选达人；但响应只回 `last30day_gmv_dollar_show` 等展示字段，不保证回具体数值。展示结果时禁止编造 GMV/GPM/客单价/佣金率数值。
-7. 用户提出当前字段无法表达的条件时，说明无法按该条件执行，不静默丢弃、不本地补算。
-8. 用户用语义/内容方向描述（而非可量化字段）时，不要用 `keyword` 词面匹配硬凑，转 [creator-nl-search](../creator-nl-search/SKILL.md)。
+6. **GMV/GPM 等带货字段**：TikTok 结构化列表用 `last30day_gmv_gte/_lte`、`last30day_gpm_gte/_lte` 等按范围筛选。结果里对应的是展示字段 `last30day_gmv_dollar_show`、`last30day_gpm_dollar_show`、`last30day_gmv_per_buyer_dollar_show`、`last30day_commission_rate_show`、`last30day_prod_sales_show`：S1 为 null，S2 是区间文本（如 `$25.00K-$60.00K`），S3 是具体值文本（如 `$184.02K`）。原样展示，不换算、不编造。
+7. **比例的单位**：互动率、受众女性占比等筛选按百分数传（`5` 表示 5%）；返回的 `engagement_rate`、受众分布却是 0–1 的小数字符串（如 `"0.1558"`），展示时乘 100 加 %。
+8. 用户提出当前字段无法表达的条件时，说明无法按该条件执行，不静默丢弃、不本地补算。
+9. 用户用语义/内容方向描述（而非可量化字段）时，不要用 `keyword` 词面匹配硬凑，转 [creator-nl-search](../creator-nl-search/SKILL.md)。
 
 ## 搜索执行边界
 
@@ -213,7 +214,7 @@ Scout 的检索链路都接受 `service_level`（S1/S2/S3，默认 S2）和 `lan
 - `service_level` 是**返回字段配置**，不代表任务优先级、检索质量或权限；不能据此推算积分价格，价格与扣费由后端 Billing 负责。
 - 用户没有要求受众画像（性别/国家/语言/年龄分布）时，不要为“可能更准”主动升到 S3；默认 S2 即可。需要受众画像时用 S3。
 - 非法等级（非 S1/S2/S3）返回 `40001`；脚本已在本地先行校验。
-- **不要把 service_level 理解为会改变搜索算法、也不要承诺 lang 能把所有字段翻成中文**：lang 当前只实际翻译结构化列表的性别/年龄，其余字段保留原始码值。
+- **不要把 service_level 理解为会改变搜索算法、也不要承诺 lang 能把所有字段翻成中文**：lang 当前只实际翻译结构化列表的性别（TikTok 的年龄段键本身就是 `18-24` 这类区间，`lang` 不改变它），其余字段保留原始码值。
 
 ## 通用请求参数
 
@@ -235,10 +236,10 @@ Scout 的检索链路都接受 `service_level`（S1/S2/S3，默认 S2）和 `lan
 | `language_code` | string | 语言代码，多选逗号分隔，不区分大小写 |
 | `followers_cnt_gte` / `_lte` | integer | 粉丝数区间 |
 | `last10_avg_video_views_cnt_gte` / `_lte` | number | 近 10 条视频平均播放量区间 |
-| `last10_avg_video_interaction_rate_gte` / `_lte` | number | 近 10 条视频平均互动率区间 |
+| `last10_avg_video_interaction_rate_gte` / `_lte` | number | 近 10 条视频平均互动率区间，按百分数传（`5` 表示 5%） |
 | `last_video_publish_date_gte` / `_lte` | string | 最近视频发布日期区间（YYYY-MM-DD） |
 | `audience_country_code_list` | string | 受众国家，多选逗号分隔 |
-| `audience_female_rate_gte` / `_lte` | number | 受众女性占比区间 |
+| `audience_female_rate_gte` / `_lte` | number | 受众女性占比区间，按百分数传（`60` 表示 60%） |
 | `audience_age_list` | string | 受众年龄区间，多选逗号分隔 |
 | `is_verified` | string | 是否认证：`1`=已认证，`0`=未认证 |
 | `last10_video_views_per_sub_gte` / `_lte` | number | 均播/粉丝比区间（百分比） |
@@ -249,7 +250,7 @@ Scout 的检索链路都接受 `service_level`（S1/S2/S3，默认 S2）和 `lan
 | `sort_field` | string | 排序字段，默认 `followers_cnt` |
 | `sort_order` | string | `asc` / `desc`，默认 `desc` |
 | `service_level` | string | `S1` / `S2` / `S3`，默认 `S2`；**真实裁剪返回字段**（见「服务等级与 lang」） |
-| `lang` | string | `cn` / `en`，默认 `en`；翻译性别/年龄，其余保留码值 |
+| `lang` | string | `cn` / `en`，默认 `en`；翻译性别（TikTok 的年龄段键本身就是 `18-24` 这类区间，`lang` 不改变它），其余保留码值 |
 
 各平台常用 `sort_field`：`followers_cnt`、`last10_avg_video_views_cnt`、`last10_avg_video_interaction_rate`；YouTube 额外支持 `kol_video_cnt`、`kol_video_views_cnt` 及 `*_short`/`*_long` 变体。
 
@@ -294,10 +295,10 @@ Scout 的检索链路都接受 `service_level`（S1/S2/S3，默认 S2）和 `lan
 | `has_mcn` / `has_line` / `has_zalo` | boolean | 是否绑定 MCN / Line / Zalo |
 | `product_category_id_array` | string | 带货类目 ID，逗号分隔 |
 | `audience_language_code_list` | string | 受众语言，多选逗号分隔 |
-| `last30day_gmv_gte` / `_lte` | number | 近 30 天带货 GMV 区间（仅筛选，不返回数值） |
-| `last30day_gpm_gte` / `_lte` | number | 近 30 天 GPM 区间（仅筛选） |
-| `last30day_gmv_per_buyer_gte` / `_lte` | number | 近 30 天客单价区间（仅筛选） |
-| `last30day_commission_rate_gte` / `_lte` | number | 近 30 天佣金率区间（仅筛选） |
+| `last30day_gmv_gte` / `_lte` | number | 近 30 天带货 GMV 区间（美元） |
+| `last30day_gpm_gte` / `_lte` | number | 近 30 天 GPM 区间 |
+| `last30day_gmv_per_buyer_gte` / `_lte` | number | 近 30 天客单价区间 |
+| `last30day_commission_rate_gte` / `_lte` | number | 近 30 天佣金率区间 |
 
 ### Instagram
 

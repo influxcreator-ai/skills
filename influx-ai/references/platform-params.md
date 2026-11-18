@@ -13,7 +13,7 @@
 - `keyword` / `username_keywords` / `must_hashtags` 是**词面匹配**，非语义；要按语义找用自然语言搜索（`discovery/creator-nl-search/SKILL.md`）。
 - `is_verified`：`1`=已认证，`0`=未认证。
 - `service_level`（S1/S2/S3，默认 S2）：**结构化列表里真实裁剪返回字段**（等级越高字段越多，S3 含受众分布）。只按本次实际返回字段展示，未返回字段为 null。逐字段等级见下方「搜索结果返回字段（按服务等级）」。
-- `lang`（cn/en，默认 en）：翻译性别/年龄字段；国家/语言/类目字典当前为空，保留原始码值。
+- `lang`（cn/en，默认 en）：翻译性别字段（TikTok 的年龄段键本身就是 `18-24` 这类区间，`lang` 不改变它）；国家/语言/类目字典当前为空，保留原始码值。
 
 ## 响应 item 数值/布尔值字符串化（结构化列表专有）
 
@@ -41,10 +41,10 @@
 | `language_code` | string | 语言代码，多选逗号分隔，不区分大小写 |
 | `followers_cnt_gte` / `_lte` | integer | 粉丝数区间 |
 | `last10_avg_video_views_cnt_gte` / `_lte` | number | 近 10 条视频平均播放量区间 |
-| `last10_avg_video_interaction_rate_gte` / `_lte` | number | 近 10 条视频平均互动率区间 |
+| `last10_avg_video_interaction_rate_gte` / `_lte` | number | 近 10 条视频平均互动率区间，按百分数传（`5` 表示 5%） |
 | `last_video_publish_date_gte` / `_lte` | string | 最近视频发布日期区间（YYYY-MM-DD） |
 | `audience_country_code_list` | string | 受众国家，多选逗号分隔 |
-| `audience_female_rate_gte` / `_lte` | number | 受众女性占比区间 |
+| `audience_female_rate_gte` / `_lte` | number | 受众女性占比区间，按百分数传（`60` 表示 60%） |
 | `audience_age_list` | string | 受众年龄区间，多选逗号分隔 |
 | `is_verified` | string | 是否认证：`1`=已认证，`0`=未认证 |
 | `last10_video_views_per_sub_gte` / `_lte` | number | 均播/粉丝比区间（百分比） |
@@ -66,12 +66,12 @@
 | `has_mcn` / `has_line` / `has_zalo` | boolean | 是否绑定 MCN / Line / Zalo |
 | `product_category_id_array` | string | 带货类目 ID，逗号分隔 |
 | `audience_language_code_list` | string | 受众语言，多选逗号分隔 |
-| `last30day_gmv_gte` / `_lte` | number | 近 30 天带货 GMV 区间（仅筛选，不返回数值） |
-| `last30day_gpm_gte` / `_lte` | number | 近 30 天 GPM 区间（仅筛选） |
-| `last30day_gmv_per_buyer_gte` / `_lte` | number | 近 30 天客单价区间（仅筛选） |
-| `last30day_commission_rate_gte` / `_lte` | number | 近 30 天佣金率区间（仅筛选） |
+| `last30day_gmv_gte` / `_lte` | number | 近 30 天带货 GMV 区间（美元） |
+| `last30day_gpm_gte` / `_lte` | number | 近 30 天 GPM 区间 |
+| `last30day_gmv_per_buyer_gte` / `_lte` | number | 近 30 天客单价区间 |
+| `last30day_commission_rate_gte` / `_lte` | number | 近 30 天佣金率区间 |
 
-> 近 30 天 GMV/GPM/客单价/佣金率等是**筛选条件**；响应只回 `last30day_gmv_dollar_show` 等展示字段，不保证回具体数值。展示时禁止编造金额。
+> 结果里对应的展示字段见下方“TikTok 返回字段”：S1 为 null，S2 是区间文本，S3 是具体值文本。原样展示，不换算、不编造金额。
 
 ## Instagram 特有筛选字段
 
@@ -152,10 +152,11 @@
 | `email` | S2 | 邮箱 |
 | `link_whatsapp` / `link_line` / `link_zalo` | S2 | WhatsApp / Line / Zalo |
 | `mcn` | S2 | MCN 机构 |
-| `audience_female_rate` | S3 | 受众女性比例（百分比，如 "78.65"） |
-| `audience_country_code_list` | S3 | 受众国家分布 |
-| `audience_language_code_list` | S3 | 受众语言分布 |
-| `audience_age_id_list` | S3 | 受众年龄分布（传 `lang` 时翻译为可读标签） |
+| `last30day_gmv_dollar_show`、`last30day_gpm_dollar_show`、`last30day_gmv_per_buyer_dollar_show`、`last30day_commission_rate_show`、`last30day_prod_sales_show` | S2 | 近 30 天 GMV、GPM、客单价、佣金率、销量的展示文本。S2 是区间（如 `$25.00K-$60.00K`），S3 是具体值（如 `$184.02K`、`13.0%`、`8,216`） |
+| `audience_female_rate` | S3 | 受众性别比例对象，如 `{"male":"0.038","female":"0.962"}`，值为 0–1 的小数字符串 |
+| `audience_country_code_list` | S3 | 受众国家分布对象，国家代码 → 0–1 小数字符串，如 `{"US":"0.7","MX":"0.118"}` |
+| `audience_language_code_list` | S3 | 受众语言分布对象，语言代码 → 0–1 小数字符串 |
+| `audience_age_id_list` | S3 | 受众年龄分布对象，年龄段 → 0–1 小数字符串，如 `{"18-24":"0.286","25-34":"0.37"}` |
 
 **TikTok 排序字段**：`followers_cnt`（默认）、`last10_avg_video_views_cnt`、`last10_avg_video_interaction_rate`。
 
